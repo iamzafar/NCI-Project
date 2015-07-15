@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.paint.*?>
+<?import javafx.scene.effect.*?>
+<?import javafx.scene.web.*?>
+<?import javafx.scene.text.*?>
+<?import javafx.scene.shape.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.*?>
+<?import java.lang.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.layout.AnchorPane?>
+
+<AnchorPane prefHeight="700.0" prefWidth="780.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
+   <children>
+      <Group layoutX="6.0" layoutY="-18.0">
+         <children>
+            <Label fx:id="clientNameLabel" layoutX="152.0" layoutY="64.0" text="Label" />
+            <Label layoutX="80.0" layoutY="47.0" text="Job Nuber: " />
+            <Label layoutX="413.0" layoutY="81.0" text="Leader of the Job" />
+            <Label fx:id="jobNumberLabel" layoutX="152.0" layoutY="47.0" text="Label" />
+            <Label fx:id="workType" layoutX="152.0" layoutY="81.0" text="Label" />
+            <Label layoutX="73.0" layoutY="64.0" text="Client Name:" />
+            <Label layoutX="107.0" layoutY="81.0" text="Type: " />
+            <Label layoutX="480.0" layoutY="49.0" text="Date" />
+            <DatePicker fx:id="datechooser" layoutX="522.0" layoutY="43.0" />
+            <ComboBox fx:id="leaderList" layoutX="522.0" layoutY="77.0" prefHeight="25.0" prefWidth="174.0" promptText="Choose Leader" />
+         </children>
+      </Group>
+      <Group layoutX="-1.0" layoutY="-23.0">
+         <children>
+            <Label layoutX="73.0" layoutY="150.0" text="Worker" textFill="#0d0101">
+               <font>
+                  <Font name="System Bold" size="14.0" />
+               </font></Label>
+            <Label layoutX="79.0" layoutY="184.0" text="From " textFill="#0d0101">
+               <font>
+                  <Font name="System Bold" size="14.0" />
+               </font></Label>
+            <Button layoutX="472.0" layoutY="280.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="112.0" text="remove worker" />
+            <Label layoutX="86.0" layoutY="219.0" text="To" textFill="#0d0101">
+               <font>
+                  <Font name="System Bold" size="14.0" />
+               </font></Label>
+            <ComboBox fx:id="fromHoursList" layoutX="129.0" layoutY="182.0" prefHeight="25.0" prefWidth="61.0" />
+            <TableView layoutX="306.0" layoutY="131.0" prefHeight="134.0" prefWidth="404.0">
+              <columns>
+                <TableColumn prefWidth="127.0" text="Name" />
+                <TableColumn prefWidth="61.0" text="Time in" />
+                  <TableColumn prefWidth="61.0" text="Time out" />
+                  <TableColumn prefWidth="52.0" text="Hours" />
+                  <TableColumn prefWidth="51.0" text="Cost" />
+                  <TableColumn prefWidth="51.0" text="Total" />
+              </columns>
+            </TableView>
+            <ComboBox fx:id="toHoursList" layoutX="129.0" layoutY="217.0" prefHeight="25.0" prefWidth="61.0" />
+            <CheckBox fx:id="lunchbreak" layoutX="76.0" layoutY="260.0" mnemonicParsing="false" text="Stopped for Lunch" />
+            <ComboBox fx:id="workerList" layoutX="129.0" layoutY="148.0" prefWidth="150.0" promptText="Choose Worker" />
+            <Button fx:id="add_Worker" layoutX="143.0" layoutY="280.0" mnemonicParsing="false" text="add worker" />
+         </children>
+         <cursor>
+            <Cursor fx:constant="DEFAULT" />
+         </cursor>
+         <effect>
+            <InnerShadow color="#18cc5aef" />
+         </effect>
+      </Group>
+      <Group layoutX="-1.0" layoutY="-53.0">
+         <children>
+            <TableView layoutX="332.0" layoutY="350.0" prefHeight="134.0" prefWidth="378.0">
+               <columns>
+                  <TableColumn prefWidth="39.0" text="ID" />
+                  <TableColumn prefWidth="130.0" text="Name" />
+                  <TableColumn prefWidth="54.0" text="Unit" />
+                  <TableColumn prefWidth="56.0" text="Amount" />
+                  <TableColumn prefWidth="47.0" text="Cost" />
+                  <TableColumn prefWidth="51.0" text="Total" />
+               </columns>
+            </TableView>
+            <ScrollPane layoutX="73.0" layoutY="350.0" prefHeight="180.0" prefWidth="226.0">
+               <content>
+                  <TreeView fx:id="tools" prefHeight="200.0" prefWidth="200.0" />
+               </content>
+            </ScrollPane>
+            <Button layoutX="465.0" layoutY="495.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="112.0" text="remove items" />
+         </children>
+         <effect>
+            <InnerShadow color="#1c2eaded" />
+         </effect>
+      </Group>
+      <Group layoutY="-17.0">
+         <children>
+            <VBox layoutX="526.0" layoutY="542.0" spacing="10.0">
+               <children>
+                  <CheckBox layoutX="601.0" layoutY="547.0" mnemonicParsing="false" text="Job Completed" />
+                  <CheckBox layoutX="601.0" layoutY="573.0" mnemonicParsing="false" text="Additional Items" />
+                  <CheckBox layoutX="601.0" layoutY="598.0" mnemonicParsing="false" text="Plant Changes" />
+               </children>
+            </VBox>
+            <TextArea layoutX="151.0" layoutY="538.0" prefHeight="78.0" prefWidth="336.0" />
+            <Label layoutX="72.0" layoutY="538.0" text="Comments" />
+         </children>
+      </Group>
+      <Group layoutX="-10.0" layoutY="11.0">
+         <children>
+            <Label layoutX="523.0" layoutY="613.0" text="DAILY TOTAL" />
+            <TextField layoutX="604.0" layoutY="609.0" prefHeight="25.0" prefWidth="97.0" />
+            <TextField layoutX="604.0" layoutY="644.0" prefHeight="25.0" prefWidth="97.0" />
+            <Button fx:id="summary" layoutX="244.0" layoutY="639.0" mnemonicParsing="false" onAction="#check" prefHeight="35.0" prefWidth="150.0" text="Go to Summary" />
+            <Label layoutX="489.0" layoutY="648.0" text="ASCENDING TOTAL" />
+         </children>
+      </Group>
+      <HBox layoutX="86.0" layoutY="484.0" spacing="10.0">
+         <children>
+            <Label layoutX="107.0" layoutY="492.0" text="How many">
+               <font>
+                  <Font name="System Bold" size="14.0" />
+               </font>
+            </Label>
+            <TextField layoutX="171.0" layoutY="488.0" prefHeight="25.0" prefWidth="39.0" />
+            <Button layoutX="225.0" layoutY="488.0" mnemonicParsing="false" text="Add Items" />
+         </children>
+         <effect>
+            <InnerShadow color="#1721e3d5" />
+         </effect>
+      </HBox>
+   </children>
+</AnchorPane>

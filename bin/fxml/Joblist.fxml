@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import java.lang.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.layout.AnchorPane?>
+
+<AnchorPane prefHeight="724.0" prefWidth="973.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="JoblistController">
+   <children>
+      <MenuBar prefHeight="27.0" prefWidth="766.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
+        <menus>
+          <Menu mnemonicParsing="false" text="File">
+            <items>
+                  <MenuItem fx:id="newJob" mnemonicParsing="false" onAction="#newJobMenuPressed" text="New Job" />
+                  <MenuItem fx:id="report" mnemonicParsing="false" text="Report" />
+              <MenuItem fx:id="close" mnemonicParsing="false" text="Close" />
+            </items>
+          </Menu>
+          <Menu mnemonicParsing="false" text="Edit">
+            <items>
+                  <MenuItem mnemonicParsing="false" text="Edit Job" />
+              <MenuItem mnemonicParsing="false" text="Delete Job" />
+            </items>
+          </Menu>
+          <Menu mnemonicParsing="false" text="Help">
+            <items>
+              <MenuItem mnemonicParsing="false" text="About" />
+            </items>
+          </Menu>
+        </menus>
+      </MenuBar>
+      <SplitPane fx:id="spltpane" dividerPositions="0.8772" layoutY="27.0" orientation="VERTICAL" prefHeight="622.0" prefWidth="760.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="27.0">
+        <items>
+          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0">
+               <children>
+                  <TableView fx:id="joblist" layoutX="121.0" layoutY="14.0" prefHeight="540.0" prefWidth="1009.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="-78.0" AnchorPane.topAnchor="0.0">
+                    <columns>
+                      <TableColumn fx:id="jobnumber" prefWidth="75.0" text="Job#" />
+                      <TableColumn fx:id="clientName" prefWidth="119.0" text="Client" />
+                        <TableColumn fx:id="invoiced" prefWidth="73.0" text="Invoiced" />
+                        <TableColumn fx:id="cost" prefWidth="66.0" text="Cost" />
+                        <TableColumn fx:id="TM" prefWidth="64.0" text="T &amp; M" />
+                        <TableColumn fx:id="completion" prefWidth="74.0" text="Completion" />
+                        <TableColumn fx:id="work_type" prefWidth="89.0" text="Work Type" />
+                        <TableColumn fx:id="hours" prefWidth="62.0" text="Hours" />
+                        <TableColumn fx:id="start_date" prefWidth="75.0" text="Start date" />
+                        <TableColumn fx:id="end_date" prefWidth="75.0" text="End date" />
+                        <TableColumn fx:id="materials" prefWidth="82.0" text="Materials" />
+                        <TableColumn fx:id="leader" prefWidth="119.0" text="Leader" />
+                    </columns>
+                  </TableView>
+               </children>
+            </AnchorPane>
+          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="52.0" prefWidth="1110.0">
+               <children>
+                  <Button layoutX="22.0" layoutY="29.0" mnemonicParsing="false" onAction="#newJob" text="New Job" />
+               </children></AnchorPane>
+        </items>
+      </SplitPane>
+   </children>
+</AnchorPane>

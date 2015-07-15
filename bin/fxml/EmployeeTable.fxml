@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.chart.*?>
+<?import javafx.scene.control.*?>
+<?import java.lang.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.layout.AnchorPane?>
+
+<AnchorPane prefHeight="443.0" prefWidth="653.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="EmployeeTabelController">
+   <children>
+      <SplitPane dividerPositions="0.8282051282051283" layoutX="157.0" layoutY="43.0" orientation="VERTICAL" prefHeight="309.0" prefWidth="494.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+        <items>
+          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0">
+               <children>
+                  <TableView fx:id="table" layoutX="177.0" layoutY="31.0" prefHeight="345.0" prefWidth="599.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                    <columns>
+                      <TableColumn fx:id="idColumn" prefWidth="64.0" text="ID" />
+                      <TableColumn fx:id="lastnColumn" prefWidth="103.0" text="Lastname" />
+                        <TableColumn fx:id="firstnColumn" prefWidth="100.0" text="Firstname" />
+                        <TableColumn fx:id="amountColumn" prefWidth="107.0" text="Amount" />
+                        <TableColumn fx:id="hourlyColumn" prefWidth="81.0" text="Hourly" />
+                        <TableColumn fx:id="costColumn" prefWidth="84.0" text="Bill" />
+                        <TableColumn fx:id="position" prefWidth="132.0" text="Position" />
+                    </columns>
+                  </TableView>
+               </children></AnchorPane>
+          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0">
+               <children>
+                  <TextField fx:id="firstn" layoutX="14.0" layoutY="20.0" prefHeight="25.0" prefWidth="112.0" promptText="Firstname" />
+                  <TextField fx:id="lastn" layoutX="145.0" layoutY="20.0" prefHeight="25.0" prefWidth="112.0" promptText="Lastname" />
+                  <TextField fx:id="amount" layoutX="437.0" layoutY="20.0" prefHeight="25.0" prefWidth="56.0" promptText="Amount" />
+                  <Button layoutX="574.0" layoutY="20.0" mnemonicParsing="false" onAction="#addEmployee" onKeyPressed="#addEmployee" prefHeight="25.0" prefWidth="63.0" text="Add" />
+                  <ComboBox fx:id="workerType" layoutX="265.0" layoutY="20.0" prefHeight="25.0" prefWidth="87.0" promptText="Position" />
+                  <ComboBox fx:id="PercentRate" layoutX="361.0" layoutY="20.0" prefHeight="25.0" prefWidth="56.0" promptText="\%" />
+                  <Button layoutX="508.0" layoutY="20.0" mnemonicParsing="false" onAction="#deleteEmployee" onKeyPressed="#deleteEmployee" prefHeight="25.0" prefWidth="56.0" text="Delete" />
+               </children>
+            </AnchorPane>
+        </items>
+      </SplitPane>
+   </children>
+</AnchorPane>

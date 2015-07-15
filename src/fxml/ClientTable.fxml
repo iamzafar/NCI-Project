@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import java.lang.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.layout.AnchorPane?>
+
+<AnchorPane prefHeight="562.0" prefWidth="819.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ClientTableController">
+   <children>
+      <SplitPane dividerPositions="0.16745283018867924" layoutX="206.0" layoutY="75.0" orientation="VERTICAL" prefHeight="426.0" prefWidth="677.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+        <items>
+          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="80.0" prefWidth="689.0">
+               <children>
+                  <Group layoutX="-17.0" layoutY="-12.0">
+                     <children>
+                        <RadioButton fx:id="FirstRd" layoutX="41.0" layoutY="37.0" mnemonicParsing="false" text="By Firstname" />
+                        <RadioButton fx:id="LastRd" layoutX="41.0" layoutY="60.0" mnemonicParsing="false" text="By Lastname" />
+                        <TextField fx:id="nameTextfield" layoutX="159.0" layoutY="46.0" />
+                        <Button fx:id="searchButton" layoutX="331.0" layoutY="46.0" mnemonicParsing="false" onAction="#search" onKeyPressed="#search" text="Search" />
+                     </children>
+                  </Group>
+                  <HBox layoutX="680.0" layoutY="33.0" spacing="20.0">
+                     <children>
+                        <Button fx:id="addClient" layoutX="677.0" layoutY="33.0" mnemonicParsing="false" onAction="#addClient" onKeyPressed="#addClient" prefHeight="25.0" prefWidth="52.0" text="Add" />
+                        <Button fx:id="deleteClient" layoutX="740.0" layoutY="33.0" mnemonicParsing="false" onAction="#deleteClient" onKeyPressed="#deleteClient" text="Delete" />
+                     </children>
+                  </HBox>
+               </children>
+            </AnchorPane>
+          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0">
+               <children>
+                  <TableView fx:id="table" layoutX="181.0" prefHeight="350.0" prefWidth="675.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                    <columns>
+                      <TableColumn fx:id="ID" prefWidth="43.0" text="ID" />
+                      <TableColumn fx:id="Fname" prefWidth="87.0" text="Firstname" />
+                        <TableColumn fx:id="Lname" prefWidth="93.0" text="Lastname" />
+                        <TableColumn fx:id="Phone" prefWidth="97.0" text="Phone" />
+                        <TableColumn fx:id="Address" prefWidth="180.0" text="Address" />
+                        <TableColumn fx:id="City" prefWidth="110.0" text="City" />
+                        <TableColumn fx:id="Zipcode" prefWidth="68.0" text="Zipcode" />
+                        <TableColumn fx:id="Email" prefWidth="138.0" text="Email" />
+                    </columns>
+                  </TableView>
+               </children>
+            </AnchorPane>
+        </items>
+      </SplitPane>
+   </children>
+</AnchorPane>

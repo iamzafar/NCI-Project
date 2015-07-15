@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.paint.*?>
+<?import javafx.scene.text.*?>
+<?import javafx.scene.control.*?>
+<?import java.lang.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.layout.AnchorPane?>
+
+<AnchorPane prefHeight="250.0" prefWidth="432.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="NewJobController">
+   <children>
+      <Label layoutX="44.0" layoutY="31.0" text="Client Name" textFill="#0c08ff">
+         <font>
+            <Font size="14.0" />
+         </font>
+      </Label>
+      <ComboBox fx:id="clientName" layoutX="129.0" layoutY="29.0" prefHeight="25.0" prefWidth="131.0" promptText="Choose or Enter" />
+      <Button layoutX="305.0" layoutY="29.0" mnemonicParsing="false" onAction="#searchPressed" text="Search" />
+      <Label layoutX="44.0" layoutY="100.0" text="Work Type" textFill="#0a05ff">
+         <font>
+            <Font size="14.0" />
+         </font>
+      </Label>
+      <ComboBox fx:id="workType" layoutX="129.0" layoutY="98.0" prefHeight="25.0" prefWidth="131.0" promptText="choose type" />
+      <Label layoutX="44.0" layoutY="168.0" text="Completion Year" textFill="#0a05ff">
+         <font>
+            <Font size="14.0" />
+         </font>
+      </Label>
+      <ComboBox fx:id="year" layoutX="167.0" layoutY="166.0" prefHeight="25.0" prefWidth="93.0" />
+      <Button layoutX="305.0" layoutY="198.0" mnemonicParsing="false" onAction="#createPressed" text="Create" />
+   </children>
+</AnchorPane>

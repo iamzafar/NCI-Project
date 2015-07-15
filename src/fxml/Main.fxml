@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import java.lang.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.layout.AnchorPane?>
+
+<AnchorPane prefHeight="273.0" prefWidth="452.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="MainController">
+   <children>
+      <Button fx:id="employee" layoutX="99.0" layoutY="81.0" mnemonicParsing="false" onAction="#pressEmployee" prefHeight="56.0" prefWidth="103.0" text="Employee" />
+      <Button fx:id="client" layoutX="259.0" layoutY="81.0" mnemonicParsing="false" onAction="#pressClient" prefHeight="56.0" prefWidth="103.0" text="Client" />
+      <Button fx:id="Job" layoutX="259.0" layoutY="174.0" mnemonicParsing="false" onAction="#pressJob" prefHeight="56.0" prefWidth="103.0" text="Job" />
+      <Button fx:id="Job1" layoutX="99.0" layoutY="174.0" mnemonicParsing="false" onAction="#pressWorkOrder" prefHeight="56.0" prefWidth="103.0" text="Work Order" />
+   </children>
+</AnchorPane>
