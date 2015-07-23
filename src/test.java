@@ -62,11 +62,7 @@ public class test extends Application {
 		launch(args);
 		//getting connection to the database
 		DBConnection conn = new DBConnection();
-		List<Joblist> j = new ArrayList<Joblist>();
-		j = conn.getAllJob();
 		
-		for(Joblist job : j)
-			System.out.println(job);
 		
 		
 		

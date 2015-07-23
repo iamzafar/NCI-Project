@@ -10,8 +10,6 @@ import java.util.List;
 import java.util.Properties;
 import javax.swing.JOptionPane;
 
-
-
 /**
  *
  * @author Zafar M
@@ -26,7 +24,7 @@ public class DBConnection {
         //getting db properties
         Properties props = new Properties();
         try {
-        	props.load(new FileInputStream("SQL/natcon.properties"));//the txt file that holds information about address of db logging information
+        	props.load(new FileInputStream("P:/NatconProjectManager/Natcon/connection/NatConDB.properties"));//the txt file that holds information about address of db logging information
         	
 		} catch (Exception e) {
 			JOptionPane.showMessageDialog(null, "ERROR! Cannot access the file with username and password information\n"
