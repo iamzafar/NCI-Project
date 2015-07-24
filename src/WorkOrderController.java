@@ -16,6 +16,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
+import javafx.scene.control.cell.PropertyValueFactory;
 
 
 public class WorkOrderController implements Initializable{
@@ -67,6 +68,27 @@ public class WorkOrderController implements Initializable{
 	
 	@FXML
 	TreeView<String> tools;
+	
+	@FXML
+	TableView workerstable;
+	
+	@FXML
+	TableColumn<EmployeeHours, String> Name;
+	
+	@FXML
+	TableColumn<EmployeeHours, String> in;
+	
+	@FXML
+	TableColumn<EmployeeHours, String> out;
+	
+	@FXML
+	TableColumn<EmployeeHours, Double> hours;
+	
+	@FXML
+	TableColumn<EmployeeHours, Double> cost;
+	
+	@FXML
+	TableColumn<EmployeeHours, Double> total;
 	
 	
 	
@@ -133,6 +155,8 @@ public class WorkOrderController implements Initializable{
 		
 		
 		
+		
+		
 		//setup tree of tools
 		
 		
@@ -142,10 +166,25 @@ public class WorkOrderController implements Initializable{
 		
 		
 		//set up table
+		Name.setCellValueFactory(new PropertyValueFactory<EmployeeHours, String>("name"));
+		
+		in.setCellValueFactory(new PropertyValueFactory<EmployeeHours, String>("timein"));
+		
+		out.setCellValueFactory(new PropertyValueFactory<EmployeeHours, String>("timeout"));
+		
+		hours.setCellValueFactory(new PropertyValueFactory<EmployeeHours, Double>("hours"));
+		
+		cost.setCellValueFactory(new PropertyValueFactory<EmployeeHours, Double>("cost"));
+		
+		total.setCellValueFactory(new PropertyValueFactory<EmployeeHours, Double>("total"));
+		
 		
 		
 	}
 	
+	/**
+	 * 
+	 */
 	@FXML
 	public void addWorker(){
 		String name;
