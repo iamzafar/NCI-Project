@@ -30,9 +30,7 @@ public class DBConnection {
 			JOptionPane.showMessageDialog(null, "ERROR! Cannot access the file with username and password information\n"
 					+ "Class DBConnection, line 32\n" + e);
 			System.out.println("Cannot access the file");
-		}
-        
-        
+		}        
         
         String user = props.getProperty("user");
         String password = props.getProperty("password");
@@ -47,9 +45,7 @@ public class DBConnection {
 			JOptionPane.showMessageDialog(null, "\tCONNECTION ERROR!\nEither the username or password, or the address of the connection is not correct"
 					+ "\nClass DBConnection, line 45");
 			System.out.println("Database connection is failed");
-		}
-        
-        
+		}       
        
         
     }

@@ -61,15 +61,14 @@ public class test extends Application {
 		
 		launch(args);
 		//getting connection to the database
-		DBConnection conn = new DBConnection();
-		
+		DBConnection conn = new DBConnection();	
 		
 		
 		
 		
 		//all data will be stored in arraylist
-		List<Client> list = new ArrayList<Client>();
-		List<Client> searchlist = new ArrayList<Client>();
+		//List<Client> list = new ArrayList<Client>();
+		//List<Client> searchlist = new ArrayList<Client>();
 		//using query to get information about all clients
 		//list = conn.getAllEmployees();
 		
