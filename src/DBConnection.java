@@ -23,8 +23,8 @@ public class DBConnection {
     
         //getting db properties
         Properties props = new Properties();
-        try {
-        	props.load(new FileInputStream("P:/NatconProjectManager/Natcon/connection/NatConDB.properties"));//the txt file that holds information about address of db logging information
+        try {									//P:/NatconProjectManager/Natcon/connection/NatConDB.properties
+        	props.load(new FileInputStream("SQL/natcon.properties"));//the txt file that holds information about address of db logging information
         	
 		} catch (Exception e) {
 			JOptionPane.showMessageDialog(null, "ERROR! Cannot access the file with username and password information\n"
