@@ -13,7 +13,7 @@
 
 <AnchorPane prefHeight="700.0" prefWidth="780.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
    <children>
-      <Group layoutX="6.0" layoutY="-18.0">
+      <Group layoutX="6.0" layoutY="-15.0">
          <children>
             <Label fx:id="clientNameLabel" layoutX="152.0" layoutY="64.0" text="Label" />
             <Label layoutX="80.0" layoutY="47.0" text="Job Nuber: " />
@@ -42,7 +42,7 @@
                <font>
                   <Font name="System Bold" size="14.0" />
                </font></Label>
-            <ComboBox fx:id="fromHoursList" layoutX="129.0" layoutY="182.0" prefHeight="25.0" prefWidth="61.0" />
+            <ComboBox fx:id="fromHoursList" layoutX="129.0" layoutY="182.0" prefHeight="25.0" prefWidth="71.0" />
             <TableView layoutX="306.0" layoutY="131.0" prefHeight="134.0" prefWidth="404.0">
               <columns>
                 <TableColumn prefWidth="127.0" text="Name" />
@@ -53,10 +53,12 @@
                   <TableColumn prefWidth="51.0" text="Total" />
               </columns>
             </TableView>
-            <ComboBox fx:id="toHoursList" layoutX="129.0" layoutY="217.0" prefHeight="25.0" prefWidth="61.0" />
+            <ComboBox fx:id="toHoursList" layoutX="129.0" layoutY="217.0" prefHeight="25.0" prefWidth="71.0" />
             <CheckBox fx:id="lunchbreak" layoutX="76.0" layoutY="260.0" mnemonicParsing="false" text="Stopped for Lunch" />
             <ComboBox fx:id="workerList" layoutX="129.0" layoutY="148.0" prefWidth="150.0" promptText="Choose Worker" />
-            <Button fx:id="add_Worker" layoutX="143.0" layoutY="280.0" mnemonicParsing="false" text="add worker" />
+            <Button fx:id="add_Worker" layoutX="143.0" layoutY="280.0" mnemonicParsing="false" onAction="#addWorker" text="add worker" />
+            <ComboBox fx:id="AmPm1" layoutX="219.0" layoutY="182.0" prefHeight="25.0" prefWidth="61.0" />
+            <ComboBox fx:id="AmPm2" layoutX="217.0" layoutY="217.0" prefHeight="25.0" prefWidth="66.0" />
          </children>
          <cursor>
             <Cursor fx:constant="DEFAULT" />

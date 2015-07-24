@@ -4,6 +4,9 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
+
+import javax.jws.Oneway;
+
 import javafx.scene.control.*;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -51,6 +54,12 @@ public class WorkOrderController implements Initializable{
 	ComboBox<String> toHoursList;
 	
 	@FXML
+	ComboBox<String> AmPm1;
+	
+	@FXML
+	ComboBox<String>AmPm2;
+	
+	@FXML
 	CheckBox lunchbreak;
 	
 	@FXML
@@ -96,6 +105,9 @@ public class WorkOrderController implements Initializable{
 	}
 
 
+	/**
+	 * Every container will be initialized at the beginning 
+	 */
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
 		// TODO Auto-generated method stub
@@ -114,6 +126,12 @@ public class WorkOrderController implements Initializable{
 		
 		leaderList.setItems(loadName(listOfWorkers));	//list of leaders in combo box
 		workerList.setItems(loadName(listOfWorkers));	//list of workers in combo box
+		AmPm1.setItems(toAmpm());
+		AmPm2.setItems(toAmpm());
+		fromHoursList.setItems(hours());
+		toHoursList.setItems(hours());
+		
+		
 		
 		//setup tree of tools
 		
@@ -126,8 +144,40 @@ public class WorkOrderController implements Initializable{
 		//set up table
 		
 		
-	}	
+	}
 	
+	@FXML
+	public void addWorker(){
+		String name;
+		String timein;
+		String timeout;
+		
+		
+			name = workerList.getValue();
+			timein = fromHoursList.getValue() + " "+ AmPm1.getValue();
+			timeout = toHoursList.getValue() + " " + AmPm2.getValue();
+			
+			
+			try {
+				if(!name.equals(null) && !timein.equals(null) && !timeout.equals(null)){
+					System.out.println("add worker pressed" + name + timein + timeout);
+				}
+			} catch (Exception e) {
+				// TODO: handle exception
+				MessageBox.show("Input was incorrect while adding worker", "Error");
+			}
+			
+			
+		
+		
+	
+	}
+	
+	/**
+	 * Returns list of strings
+	 * @param list
+	 * @return
+	 */
 	private ObservableList<String> loadName(List<String> list){
 		
 		ObservableList<String> names = FXCollections.observableArrayList(); 
@@ -139,5 +189,31 @@ public class WorkOrderController implements Initializable{
 		
 		return names;
 	}
+	
+	//this method returns am/pm list
+	private ObservableList<String> toAmpm(){
+		ObservableList<String> list = FXCollections.observableArrayList();
+		
+		list.addAll("AM", "PM");
+		
+		
+		return  list;
+	}
+	
+	
+	/**
+	 * Returns list of hours
+	 * @return
+	 */
+	private ObservableList<String> hours(){
+		ObservableList<String> time = FXCollections.observableArrayList();
+		
+		time.addAll("1:00","1:30","2:00","2:30","3:00","3:15" ,"3:30", "3:50", "4:00", "4:15", "4:20","4:30", "4:50", 
+				"5:00", "5:30", "6:00", "6:30", "6:50", "7:00", "7:15", "7:30", "7:45", "8:00", "8:30", "9:00", "9:30",
+				"10:00", "10:30", "11:00", "11:30", "12:00", "12:30");
+		
+		return time;
+	}
+	
 
 }

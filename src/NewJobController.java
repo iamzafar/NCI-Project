@@ -140,31 +140,26 @@ public class NewJobController implements Initializable{
 		} catch (Exception e) {	//if there`s no input message will be displayed
 			// TODO: handle exception
 			new MessageBox().show("Enter the name", "Incorrect Input");  
-		}
-		
-		
-			
-		
+		}		
 	}
 	
 	
 	
-	/**
+	/**************************************************************************************
 	 * When create button pressed all condition will be checked and 
 	 * it will return to the joblist window
 	 * @param event
 	 * @throws IOException
-	 */
+	 ***************************************************************************************/
 	@FXML
 	public void createPressed(ActionEvent event)throws IOException, SQLException{
 		
 		String ID;
-		int clientID;
-		
+		int clientID;		
 		
 		//conditions
 		
-		//getting name
+		//getting values from the comboboxes
 		String name = clientName.getValue();
 		String wrkTp = workType.getValue();
 		String compyear = year.getValue();
@@ -173,12 +168,11 @@ public class NewJobController implements Initializable{
 		try {
 			if(name.trim().length() != 0 && !name.equals(null) 
 					&& wrkTp.trim().length() != 0 && compyear.trim().length() != 0){
-				
-				//getting id
-				
-				clientID = conn.getClientID(name);
+												
+				clientID = conn.getClientID(name);//getting id
 				ID = Integer.toString(clientID) ; 
 				System.out.println("ID is: " + ID + ", worktype: " + wrkTp + ", year: " + compyear);
+				
 				int jobnum = createJobnum(compyear, ID, name);
 				conn.insertJobnumber(jobnum, wrkTp, clientID, Integer.parseInt(compyear));
 				
@@ -197,17 +191,17 @@ public class NewJobController implements Initializable{
 			// TODO: handle exception
 			MessageBox box = new MessageBox();
 			box.show("Wrong input", "Error");
-		}
-		
-		
-		
-		
-		
-		
-		
-		
+		}		
 	}
 	
+	/*********************************************************************************************************
+	 * This method will create the folder with specific path
+	 * @param year
+	 * @param id
+	 * @param name
+	 * @return
+	 * @throws IOException
+	 *********************************************************************************************************/
 	private int createJobnum(String year, String id, String name) throws IOException{
 		String ID;
 		String index = "01";
@@ -215,6 +209,8 @@ public class NewJobController implements Initializable{
 		
 		String Year = year.substring(2, 4);
 		
+		//creating the id for the client;
+		//id for the client consists of 3 digits, e.g. 001;
 		if(id.length() == 1)
 			ID = "00" + id;
 		else if(id.length() == 2)
@@ -237,7 +233,7 @@ public class NewJobController implements Initializable{
 		}
 		
 		if(!file.exists()){
-			file.mkdirs();
+			file.mkdirs(); //I chose mkdirs() because it will create the path if it does not exist
 			box.show("Job number " +  number + " was created",  "Success");
 		}
 		else if(!file.mkdirs()){

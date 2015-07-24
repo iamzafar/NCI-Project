@@ -127,7 +127,7 @@ public class JoblistController implements Initializable{
 		
 		try {
 			connection = new DBConnection();
-			//jobs = connection.getAllJob();
+			jobs = connection.getAllJob();
 		} catch (Exception e) {
 			// TODO: handle exception
 			MessageBox box = new MessageBox();

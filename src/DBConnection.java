@@ -830,11 +830,12 @@ public class DBConnection {
 		PreparedStatement prepStmt = null;
 		
 		try {
-			prepStmt = myConn.prepareStatement("insert into job (jobnum, completion, client_id, worktype) values (?, ?, ?, ?);");
+			prepStmt = myConn.prepareStatement("insert into job (jobnum, completion, client_id, worktype, employeeId) values (?, ?, ?, ?, ?);");
 			prepStmt.setInt(1, jobnum);
 			prepStmt.setInt(2, completion);
 			prepStmt.setInt(3, id);
-			prepStmt.setString(4, worktype);			
+			prepStmt.setString(4, worktype);	
+			prepStmt.setInt(5, 99); //when job is created the default value for the employeeId column will be 99
 			
 			prepStmt.executeUpdate();
 		} catch (Exception e) {
