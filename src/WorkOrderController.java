@@ -1,12 +1,11 @@
 import java.net.URL;
 import java.sql.SQLException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
-
-import javax.jws.Oneway;
-
 import javafx.scene.control.*;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -24,7 +23,7 @@ public class WorkOrderController implements Initializable{
 	private DBConnection connection;
 	private List<String> listOfWorkers;
 	private TreeItem<String> root, masonrySupplies, bulkGoods;
-	
+	private List<EmployeeHours> employeelist;
 	
 	
 	@FXML
@@ -67,10 +66,19 @@ public class WorkOrderController implements Initializable{
 	Button add_Worker;
 	
 	@FXML
-	TreeView<String> tools;
+	TreeView<String> tools;//tree of tools
+	
+	TreeItem<String> base;
+	TreeItem<String> masonrysupply;
+	TreeItem<String> bulkgoods;
+	
+	
+	
 	
 	@FXML
 	TableView workerstable;
+	
+	
 	
 	@FXML
 	TableColumn<EmployeeHours, String> Name;
@@ -105,7 +113,10 @@ public class WorkOrderController implements Initializable{
 		masonrySupplies = new TreeItem<String>();
 		bulkGoods = new TreeItem<String>();
 		root.setExpanded(false);
-	
+		employeelist = new ArrayList<EmployeeHours>();
+		
+		
+		
 	}	
 	
 	
@@ -138,6 +149,9 @@ public class WorkOrderController implements Initializable{
 		workType.setText("Work type");
 		
 		
+		
+		
+		
 		//getting leaders
 		try {
 			listOfWorkers = connection.getName();
@@ -158,6 +172,14 @@ public class WorkOrderController implements Initializable{
 		
 		
 		//setup tree of tools
+		
+		base = new TreeItem<String>();
+		base.setExpanded(true);
+		masonrySupplies = makeBranch("Masonry Supply", root);
+		bulkgoods = makeBranch("Bulk Goods", root);
+		tools = new TreeView<String>(base);
+		//tools.setRoot(base);
+		tools.setShowRoot(false);
 		
 		
 		
@@ -183,10 +205,11 @@ public class WorkOrderController implements Initializable{
 	}
 	
 	/**
-	 * 
+	 * This method adds employee to the table 
+	 * @throws ParseException 
 	 */
 	@FXML
-	public void addWorker(){
+	public void addWorker() throws ParseException{
 		String name;
 		String timein;
 		String timeout;
@@ -207,16 +230,67 @@ public class WorkOrderController implements Initializable{
 			}
 			
 			
+		double hours = getHours(timein, timeout);
+		double cost = connection.getCost(name);
+		double total = cost * hours;
+		
+		System.out.println(name + " cost is: "  + cost + ", hours " + hours + ", total = " + total);
+		EmployeeHours worker = new EmployeeHours(name, timein, timeout, hours, cost, total);		
+		employeelist.add(worker);
+		System.out.println("array size " + employeelist.size());
 		
 		
+		workerstable.setItems(loadWorker(employeelist));
 	
 	}
 	
-	/**
+	/***********************************************************************
+	 * Removes worker from the table
+	 ***********************************************************************/
+	@FXML
+	public void removeWorker(){
+		System.out.println("Remove Worker was pressed");
+		
+		ObservableList<EmployeeHours> items;
+		
+		items = workerstable.getItems();
+		
+		
+		try {
+			EmployeeHours e = (EmployeeHours)(workerstable.getSelectionModel().getSelectedItem());
+			items.remove(e);//deleting from the table
+			
+			for(int i = 0; i < employeelist.size(); i++){
+				if(e.equals(employeelist.get(i))){
+					employeelist.remove(i);
+				}
+			}
+			
+			
+			System.out.println("Array size: " + employeelist.size() +"\nWorker was removed: "+e);
+			System.out.println(employeelist);
+		} catch (Exception e) {
+			// TODO: handle exception
+			System.out.println("Employee is not selected");
+		}
+		
+		
+	}
+	
+	//making branch
+	private TreeItem<String> makeBranch(String title, TreeItem<String> parent){
+		TreeItem<String> item = new TreeItem<String>(title);
+		item.setExpanded(true);
+		parent.getChildren().add(item);
+		
+		return item;
+	}
+	
+	/**************************************************************************
 	 * Returns list of strings
 	 * @param list
 	 * @return
-	 */
+	 **************************************************************************/
 	private ObservableList<String> loadName(List<String> list){
 		
 		ObservableList<String> names = FXCollections.observableArrayList(); 
@@ -239,11 +313,28 @@ public class WorkOrderController implements Initializable{
 		return  list;
 	}
 	
-	
 	/**
-	 * Returns list of hours
+	 * Returns worker which will be added into the table
+	 * @param empl
 	 * @return
 	 */
+	private ObservableList<EmployeeHours> loadWorker(List<EmployeeHours> empl){
+		ObservableList<EmployeeHours> worker = FXCollections.observableArrayList();
+		
+		for(EmployeeHours e : empl){
+			worker.add(e);
+		}	
+		
+		
+		
+		return worker;
+		
+	}
+	
+	/******************************************************************************************************************
+	 * Returns list of hours
+	 * @return
+	 *******************************************************************************************************************/
 	private ObservableList<String> hours(){
 		ObservableList<String> time = FXCollections.observableArrayList();
 		
@@ -252,6 +343,27 @@ public class WorkOrderController implements Initializable{
 				"10:00", "10:30", "11:00", "11:30", "12:00", "12:30");
 		
 		return time;
+	}
+	
+	/*********************************************************************
+	 * Return hours of work
+	 * @param in
+	 * @param out
+	 * @return
+	 * @throws ParseException 
+	 **********************************************************************/
+	private double getHours(String in, String out) throws ParseException{
+		double hours = 0.0;		
+		
+		SimpleDateFormat frmt = new SimpleDateFormat("hh:mm a");
+		java.util.Date date1 = frmt.parse(in);
+		java.util.Date date2 = frmt.parse(out);
+		
+		hours = Math.round((Math.abs(date2.getTime() - date1.getTime())/3600000.0)*100.0)/100.0;
+		
+		
+		return hours;
+		
 	}
 	
 

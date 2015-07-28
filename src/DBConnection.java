@@ -551,6 +551,43 @@ public class DBConnection {
 		}
 	}
 	
+	/************************************************************************************
+	 * Returns the cost of the employee by the given name
+	 * @param name
+	 * @return
+	 ************************************************************************************/
+	public double getCost(String name){
+		double number = 0.0;
+		PreparedStatement myStmt = null;
+		ResultSet myRs = null;
+		
+		try {
+			myStmt = myConn.prepareStatement("select cost from employee where concat(first, \" \", last) =?;");
+			myStmt.setString(1, name);
+			
+			myRs = myStmt.executeQuery();
+			
+			while(myRs.next()){
+				number = myRs.getDouble("cost");
+			}
+			
+		} catch (Exception e) {
+			// TODO: handle exception
+			MessageBox box = new MessageBox();
+			
+			box.show("Cannot get the cost from the employee table", "Error");
+		}
+		
+		
+		
+		return number;
+		
+	}
+	
+	
+	
+	
+	
 	/*****************************************************************************************************************
 	 * This method returns foremen which are leaders of the job
 	 * @return list of foremen

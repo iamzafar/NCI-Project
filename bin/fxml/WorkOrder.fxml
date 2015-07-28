@@ -11,7 +11,7 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.layout.AnchorPane?>
 
-<AnchorPane prefHeight="700.0" prefWidth="780.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
+<AnchorPane prefHeight="754.0" prefWidth="780.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
    <children>
       <Group layoutX="6.0" layoutY="-15.0">
          <children>
@@ -37,7 +37,7 @@
                <font>
                   <Font name="System Bold" size="14.0" />
                </font></Label>
-            <Button layoutX="472.0" layoutY="280.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="112.0" text="remove worker" />
+            <Button layoutX="472.0" layoutY="280.0" mnemonicParsing="false" onAction="#removeWorker" prefHeight="25.0" prefWidth="112.0" text="remove worker" />
             <Label layoutX="86.0" layoutY="219.0" text="To" textFill="#0d0101">
                <font>
                   <Font name="System Bold" size="14.0" />
@@ -67,7 +67,7 @@
             <InnerShadow color="#18cc5aef" />
          </effect>
       </Group>
-      <Group layoutX="-1.0" layoutY="-53.0">
+      <Group layoutX="-2.0" layoutY="-47.0">
          <children>
             <TableView layoutX="332.0" layoutY="350.0" prefHeight="134.0" prefWidth="378.0">
                <columns>
@@ -79,18 +79,14 @@
                   <TableColumn prefWidth="51.0" text="Total" />
                </columns>
             </TableView>
-            <ScrollPane layoutX="73.0" layoutY="350.0" prefHeight="180.0" prefWidth="226.0">
-               <content>
-                  <TreeView fx:id="tools" prefHeight="200.0" prefWidth="200.0" />
-               </content>
-            </ScrollPane>
             <Button layoutX="465.0" layoutY="495.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="112.0" text="remove items" />
+            <TreeView fx:id="tools" layoutX="75.0" layoutY="336.0" prefHeight="200.0" prefWidth="200.0" showRoot="false" />
          </children>
          <effect>
             <InnerShadow color="#1c2eaded" />
          </effect>
       </Group>
-      <Group layoutY="-17.0">
+      <Group layoutY="-7.0">
          <children>
             <VBox layoutX="526.0" layoutY="542.0" spacing="10.0">
                <children>
@@ -112,7 +108,7 @@
             <Label layoutX="489.0" layoutY="648.0" text="ASCENDING TOTAL" />
          </children>
       </Group>
-      <HBox layoutX="86.0" layoutY="484.0" spacing="10.0">
+      <HBox layoutX="88.0" layoutY="495.0" spacing="10.0">
          <children>
             <Label layoutX="107.0" layoutY="492.0" text="How many">
                <font>

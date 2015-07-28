@@ -82,7 +82,7 @@ public class EmployeeHours {
 	public String toString() {
 		return "EmployeeHours [name=" + name + ", timein=" + timein
 				+ ", timeout=" + timeout + ", hours=" + hours + ", cost="
-				+ cost + ", total=" + total; 
+				+ cost + ", total=" + total + "\n"; 
 	}
 
 	
