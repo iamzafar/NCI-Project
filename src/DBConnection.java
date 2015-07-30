@@ -8,6 +8,7 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
+
 import javax.swing.JOptionPane;
 
 /**
@@ -1001,7 +1002,7 @@ public class DBConnection {
 	 * 	----------------------------TOOLS STARTS HERE------------------------------------------
 	 ********************************************************************************************************/
 	
-	public List<Tools> getBlockStones() throws SQLException{
+	public List<Tools> getAllBlockStones() throws SQLException{
 		List<Tools> list = new ArrayList<Tools>();
 		
 		Statement myStmt = null;
@@ -1028,6 +1029,176 @@ public class DBConnection {
 		return list;
 		
 	}
+	
+	/**
+	 * Returns tool by the given name
+	 * @param name
+	 * @return
+	 * @throws SQLException
+	 */
+	public Tools getTool(String name) throws SQLException{
+		Tools tool = null;		
+		PreparedStatement prepStmt = null;
+		ResultSet myRs = null;
+		
+		try {
+			prepStmt = myConn.prepareStatement("SELECT * FROM sample.tools where name =?;");
+			prepStmt.setString(1, name);
+			
+			
+			myRs = prepStmt.executeQuery();
+			
+			while(myRs.next()){
+				
+				tool = convertToolsToRow(myRs);
+			}
+			
+		} 
+		finally {
+			close(prepStmt, myRs);
+		}
+		
+		
+		return tool;
+	}
+	
+	
+	/**
+	 * This method returns list of items under Stone and Blocks
+	 * @return 
+	 */
+	public List<String> getNameOfBlockStones(){
+		List<String> list = new ArrayList<String>();
+		
+		Statement myStmt = null;
+		ResultSet myRs = null;
+		
+		try {
+			myStmt = myConn.createStatement();
+			myRs = myStmt.executeQuery("SELECT name FROM tools where Type = \"Stone & Masonry\";");
+			
+			while(myRs.next()){
+				String str = myRs.getString("name");
+				list.add(str);
+			}
+		} catch (Exception e) {
+			// TODO: handle exception
+			MessageBox.show("Cannot get list of Stone & Blocks", "Error");
+		}
+		finally {
+			try {
+				close(myStmt, myRs);
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		
+		return list;
+	}
+	
+	/**
+	 * 
+	 * @return List of item names under Bulk Goods
+	 */
+	public List<String> getNameOfBulkGoods(){
+		List<String> list = new ArrayList<String>();
+		
+		Statement myStmt = null;
+		ResultSet myRs = null;
+		
+		try {
+			myStmt = myConn.createStatement();
+			myRs = myStmt.executeQuery("SELECT name FROM tools where Type = \"Bulk Goods\";");
+			
+			while(myRs.next()){
+				String str = myRs.getString("name");
+				list.add(str);
+			}
+		} catch (Exception e) {
+			// TODO: handle exception
+			MessageBox.show("Cannot get list of Bulk Goods", "Error");
+		}
+		finally {
+			try {
+				close(myStmt, myRs);
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		
+		return list;
+	}
+	
+	/**
+	 * 
+	 * @return list of items under Disposal
+	 */
+	public List<String> getNameOfDisposal(){
+		List<String> list = new ArrayList<String>();
+		
+		Statement myStmt = null;
+		ResultSet myRs = null;
+		
+		try {
+			myStmt = myConn.createStatement();
+			myRs = myStmt.executeQuery("SELECT name FROM tools where Type = \"Disposal\";");
+			
+			while(myRs.next()){
+				String str = myRs.getString("name");
+				list.add(str);
+			}
+		} catch (Exception e) {
+			// TODO: handle exception
+			MessageBox.show("Cannot get list of Bulk Goods", "Error");
+		}
+		finally {
+			try {
+				close(myStmt, myRs);
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		
+		return list;
+	}
+	
+	/**
+	 * 
+	 * @return list of items under Wood Products
+	 */
+	public List<String> getNameOfWoodProducts(){
+		List<String> list = new ArrayList<String>();
+		
+		Statement myStmt = null;
+		ResultSet myRs = null;
+		
+		try {
+			myStmt = myConn.createStatement();
+			myRs = myStmt.executeQuery("SELECT name FROM tools where Type = \"Wood Products\";");
+			
+			while(myRs.next()){
+				String str = myRs.getString("name");
+				list.add(str);
+			}
+		} catch (Exception e) {
+			// TODO: handle exception
+			MessageBox.show("Cannot get list of Bulk Goods", "Error");
+		}
+		finally {
+			try {
+				close(myStmt, myRs);
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		
+		return list;
+	}
+	
 	
 	/**
 	 * This method converts output of the query to Tools object

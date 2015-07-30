@@ -69,17 +69,17 @@
       </Group>
       <Group layoutX="-2.0" layoutY="-36.0">
          <children>
-            <TableView layoutX="332.0" layoutY="350.0" prefHeight="134.0" prefWidth="378.0">
+            <TableView fx:id="toolstable" layoutX="332.0" layoutY="350.0" prefHeight="134.0" prefWidth="378.0">
                <columns>
-                  <TableColumn prefWidth="39.0" text="ID" />
-                  <TableColumn prefWidth="130.0" text="Name" />
-                  <TableColumn prefWidth="54.0" text="Unit" />
-                  <TableColumn prefWidth="56.0" text="Amount" />
-                  <TableColumn prefWidth="47.0" text="Cost" />
-                  <TableColumn prefWidth="51.0" text="Total" />
+                  <TableColumn fx:id="Id" prefWidth="39.0" text="ID" />
+                  <TableColumn fx:id="itemNameColumn" prefWidth="130.0" text="Name" />
+                  <TableColumn fx:id="unitColumn" prefWidth="54.0" text="Unit" />
+                  <TableColumn fx:id="toolAmount" prefWidth="56.0" text="Amount" />
+                  <TableColumn fx:id="toolCost" prefWidth="47.0" text="Cost" />
+                  <TableColumn fx:id="toolTotalColumn" prefWidth="51.0" text="Total" />
                </columns>
             </TableView>
-            <Button layoutX="465.0" layoutY="495.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="112.0" text="remove items" />
+            <Button layoutX="465.0" layoutY="495.0" mnemonicParsing="false" onAction="#removeItem" prefHeight="25.0" prefWidth="112.0" text="remove items" />
             <TreeView fx:id="tools" layoutX="75.0" layoutY="336.0" prefHeight="200.0" prefWidth="234.0" showRoot="false" />
          </children>
          <effect>
@@ -115,7 +115,7 @@
                   <Font name="System Bold" size="14.0" />
                </font>
             </Label>
-            <TextField layoutX="171.0" layoutY="488.0" prefHeight="25.0" prefWidth="39.0" />
+            <TextField fx:id="itemAmount" layoutX="171.0" layoutY="488.0" prefHeight="25.0" prefWidth="39.0" />
             <Button layoutX="225.0" layoutY="488.0" mnemonicParsing="false" onAction="#addItem" text="Add Items" />
          </children>
          <effect>
