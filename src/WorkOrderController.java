@@ -6,6 +6,9 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
+
+import com.sun.javafx.geom.Matrix3f;
+
 import javafx.scene.control.*;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -22,7 +25,8 @@ public class WorkOrderController implements Initializable{
 
 	private DBConnection connection;
 	private List<String> listOfWorkers;
-	private TreeItem<String> root, masonrySupplies, bulkGoods;
+	private TreeItem<String> root, masonrySupplies, bulkGoods, disposal, fencing, masonry, miscellaneous,
+								pipes, vehicles_eqipm, woods, stones, blocks, ADS, pipe1_5, pipe2, pipe3, pipe4;
 	private List<EmployeeHours> employeelist;
 	
 	
@@ -66,19 +70,10 @@ public class WorkOrderController implements Initializable{
 	Button add_Worker;
 	
 	@FXML
-	TreeView<String> tools;//tree of tools
-	
-	TreeItem<String> base;
-	TreeItem<String> masonrysupply;
-	TreeItem<String> bulkgoods;
-	
-	
-	
+	TreeView<String> tools;//tree of tools	
 	
 	@FXML
-	TableView workerstable;
-	
-	
+	TableView workerstable;	
 	
 	@FXML
 	TableColumn<EmployeeHours, String> Name;
@@ -106,13 +101,17 @@ public class WorkOrderController implements Initializable{
 	
 	public WorkOrderController(String jobNumber, String clientName, String jobType) throws SQLException, Exception {
 		// TODO Auto-generated constructor stub
-		this.jobNumber = jobNumber;
-		connection = new DBConnection();
+		
+		this.jobNumber = jobNumber; // existting job number
+		connection = new DBConnection(); //connection to db
 		listOfWorkers = new ArrayList<String>();
-		root = new TreeItem<String>();
+		
+		//tree
+		/*root = new TreeItem<String>();
+		root.setExpanded(true);
 		masonrySupplies = new TreeItem<String>();
-		bulkGoods = new TreeItem<String>();
-		root.setExpanded(false);
+		bulkGoods = new TreeItem<String>();*/
+		
 		employeelist = new ArrayList<EmployeeHours>();
 		
 		
@@ -162,8 +161,12 @@ public class WorkOrderController implements Initializable{
 		
 		leaderList.setItems(loadName(listOfWorkers));	//list of leaders in combo box
 		workerList.setItems(loadName(listOfWorkers));	//list of workers in combo box
+		
+		//setting AM/PM
 		AmPm1.setItems(toAmpm());
 		AmPm2.setItems(toAmpm());
+		
+		//setting hours
 		fromHoursList.setItems(hours());
 		toHoursList.setItems(hours());
 		
@@ -171,14 +174,31 @@ public class WorkOrderController implements Initializable{
 		
 		
 		
-		//setup tree of tools
-		
-		base = new TreeItem<String>();
-		base.setExpanded(true);
+		//setup tree of tools	
+		root = new TreeItem<String>(); //root of the tree
+		root.setExpanded(true);		
+				
+		bulkGoods = makeBranch("Bulk Goods", root);	
+		disposal = makeBranch("Disposal", root);
+		fencing = makeBranch("Fencing", root);
 		masonrySupplies = makeBranch("Masonry Supply", root);
-		bulkgoods = makeBranch("Bulk Goods", root);
-		tools = new TreeView<String>(base);
-		//tools.setRoot(base);
+		blocks = makeBranch("Blocks & Stones", masonrySupplies);
+		stones = makeBranch("Natural Stones", masonrySupplies);
+		masonry = makeBranch("Masonry Supply", masonrySupplies);
+		
+		miscellaneous = makeBranch("Miscellaneous", root);
+		pipes = makeBranch("Pipes", root);
+		ADS = makeBranch("ADS", pipes);
+		pipe1_5 = makeBranch("1.5\" Pipes", pipes);
+		pipe2 = makeBranch("2\" Pipes", pipes);
+		pipe3 = makeBranch("3\" Pipes", pipes);
+		pipe4 = makeBranch("4\" Pipes", pipes);
+		
+		vehicles_eqipm = makeBranch("Vehicled & Equipment", root);
+		woods = makeBranch("Wood Products", root);
+		
+		
+		tools.setRoot(root);
 		tools.setShowRoot(false);
 		
 		
@@ -257,9 +277,10 @@ public class WorkOrderController implements Initializable{
 		
 		
 		try {
-			EmployeeHours e = (EmployeeHours)(workerstable.getSelectionModel().getSelectedItem());
+			EmployeeHours e = (EmployeeHours)(workerstable.getSelectionModel().getSelectedItem()); //get selected item from the table
 			items.remove(e);//deleting from the table
 			
+			//removing it from the array
 			for(int i = 0; i < employeelist.size(); i++){
 				if(e.equals(employeelist.get(i))){
 					employeelist.remove(i);
@@ -277,10 +298,21 @@ public class WorkOrderController implements Initializable{
 		
 	}
 	
+	@FXML
+	public void addItem()throws SQLException{
+		System.out.println("Add Item Was pressed");
+		List<Tools> list = new ArrayList<Tools>();
+		list = connection.getBlockStones();
+		
+		//printing
+		for(Tools t :list)
+			System.out.println(t);
+	}
+	
 	//making branch
 	private TreeItem<String> makeBranch(String title, TreeItem<String> parent){
 		TreeItem<String> item = new TreeItem<String>(title);
-		item.setExpanded(true);
+		item.setExpanded(false);
 		parent.getChildren().add(item);
 		
 		return item;

@@ -996,5 +996,56 @@ public class DBConnection {
 	private void close(Statement myStmt) throws SQLException {
 		close(null, myStmt, null);		
 	}
+	
+	/********************************************************************************************************
+	 * 	----------------------------TOOLS STARTS HERE------------------------------------------
+	 ********************************************************************************************************/
+	
+	public List<Tools> getBlockStones() throws SQLException{
+		List<Tools> list = new ArrayList<Tools>();
+		
+		Statement myStmt = null;
+		ResultSet myRs = null;
+		
+		try {
+			myStmt = myConn.createStatement();
+			myRs = myStmt.executeQuery("SELECT * FROM tools where Type = \"Stone & Masonry\";");
+									
+			while(myRs.next()){
+				Tools t = convertToolsToRow(myRs);
+				list.add(t);
+			}			
+			
+		} catch (Exception e) {
+			// TODO: handle exception
+			MessageBox box = new MessageBox();
+			box.show("Canoot get Stone & Masonry List", "Error");
+		}
+		finally {
+			close(myStmt, myRs);
+		}
+		
+		return list;
+		
+	}
+	
+	/**
+	 * This method converts output of the query to Tools object
+	 * @param myRs
+	 * @return
+	 * @throws SQLException
+	 */
+	private Tools convertToolsToRow(ResultSet myRs)throws SQLException{
+		Tools tool = null;
+		int id = myRs.getInt("idTools");		
+		String name = myRs.getString("name");
+		String each = myRs.getString("Each");		
+		double billed = myRs.getDouble("billed");
+		
+		tool = new Tools(id, name, each, billed);
+		
+		return tool;
+	}
+	
     
 }

@@ -67,7 +67,7 @@
             <InnerShadow color="#18cc5aef" />
          </effect>
       </Group>
-      <Group layoutX="-2.0" layoutY="-47.0">
+      <Group layoutX="-2.0" layoutY="-36.0">
          <children>
             <TableView layoutX="332.0" layoutY="350.0" prefHeight="134.0" prefWidth="378.0">
                <columns>
@@ -80,13 +80,13 @@
                </columns>
             </TableView>
             <Button layoutX="465.0" layoutY="495.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="112.0" text="remove items" />
-            <TreeView fx:id="tools" layoutX="75.0" layoutY="336.0" prefHeight="200.0" prefWidth="200.0" showRoot="false" />
+            <TreeView fx:id="tools" layoutX="75.0" layoutY="336.0" prefHeight="200.0" prefWidth="234.0" showRoot="false" />
          </children>
          <effect>
             <InnerShadow color="#1c2eaded" />
          </effect>
       </Group>
-      <Group layoutY="-7.0">
+      <Group layoutX="1.0" layoutY="11.0">
          <children>
             <VBox layoutX="526.0" layoutY="542.0" spacing="10.0">
                <children>
@@ -99,7 +99,7 @@
             <Label layoutX="72.0" layoutY="538.0" text="Comments" />
          </children>
       </Group>
-      <Group layoutX="-10.0" layoutY="11.0">
+      <Group layoutX="-5.0" layoutY="25.0">
          <children>
             <Label layoutX="523.0" layoutY="613.0" text="DAILY TOTAL" />
             <TextField layoutX="604.0" layoutY="609.0" prefHeight="25.0" prefWidth="97.0" />
@@ -108,7 +108,7 @@
             <Label layoutX="489.0" layoutY="648.0" text="ASCENDING TOTAL" />
          </children>
       </Group>
-      <HBox layoutX="88.0" layoutY="495.0" spacing="10.0">
+      <HBox layoutX="89.0" layoutY="510.0" spacing="10.0">
          <children>
             <Label layoutX="107.0" layoutY="492.0" text="How many">
                <font>
@@ -116,7 +116,7 @@
                </font>
             </Label>
             <TextField layoutX="171.0" layoutY="488.0" prefHeight="25.0" prefWidth="39.0" />
-            <Button layoutX="225.0" layoutY="488.0" mnemonicParsing="false" text="Add Items" />
+            <Button layoutX="225.0" layoutY="488.0" mnemonicParsing="false" onAction="#addItem" text="Add Items" />
          </children>
          <effect>
             <InnerShadow color="#1721e3d5" />
