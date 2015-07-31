@@ -99,7 +99,7 @@
          <children>
             <VBox layoutX="526.0" layoutY="542.0" spacing="10.0">
                <children>
-                  <CheckBox layoutX="601.0" layoutY="547.0" mnemonicParsing="false" text="Job Completed" />
+                  <CheckBox fx:id="jobCompleted" layoutX="601.0" layoutY="547.0" mnemonicParsing="false" text="Job Completed" />
                   <CheckBox layoutX="601.0" layoutY="573.0" mnemonicParsing="false" text="Additional Items" />
                   <CheckBox layoutX="601.0" layoutY="598.0" mnemonicParsing="false" text="Plant Changes" />
                </children>

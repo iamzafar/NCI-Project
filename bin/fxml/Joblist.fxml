@@ -5,9 +5,9 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.layout.AnchorPane?>
 
-<AnchorPane prefHeight="724.0" prefWidth="973.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="JoblistController">
+<AnchorPane prefHeight="724.0" prefWidth="1054.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="JoblistController">
    <children>
-      <MenuBar prefHeight="27.0" prefWidth="766.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
+      <MenuBar prefHeight="27.0" prefWidth="1054.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
         <menus>
           <Menu mnemonicParsing="false" text="File">
             <items>
@@ -47,6 +47,7 @@
                         <TableColumn fx:id="end_date" prefWidth="75.0" text="End date" />
                         <TableColumn fx:id="materials" prefWidth="82.0" text="Materials" />
                         <TableColumn fx:id="leader" prefWidth="119.0" text="Leader" />
+                        <TableColumn fx:id="profit" prefWidth="82.0" text="Profit" />
                     </columns>
                   </TableView>
                </children>
@@ -54,6 +55,7 @@
           <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="52.0" prefWidth="1110.0">
                <children>
                   <Button layoutX="22.0" layoutY="29.0" mnemonicParsing="false" onAction="#newJob" text="New Job" />
+                  <Button layoutX="957.0" layoutY="29.0" mnemonicParsing="false" onAction="#back" prefHeight="25.0" prefWidth="62.0" text="Back" />
                </children></AnchorPane>
         </items>
       </SplitPane>

@@ -56,6 +56,8 @@ public class sample {
 		/*int num = conn.getClientID("Hudson Kate");
 		System.out.println(num);*/
 		
+		System.out.println(conn.isJobStarted("1500103"));
+		
 			
 	}
 }

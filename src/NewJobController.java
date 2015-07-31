@@ -228,7 +228,7 @@ public class NewJobController implements Initializable{
 		while(file.exists()){
 			number = number + 1;
 			path = "E:/Natural Concerns/Client Folder - NEW " + year + "/" + name + "/" + number;
-			System.out.println(number);
+			System.out.println("New JobNumber: "+number);
 			file = new File(path);
 		}
 		

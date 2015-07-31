@@ -75,6 +75,9 @@ public class WorkOrderController implements Initializable{
 	CheckBox lunchbreak;
 	
 	@FXML
+	CheckBox jobCompleted;
+	
+	@FXML
 	TextField itemAmount;
 	
 	@FXML
@@ -132,6 +135,7 @@ public class WorkOrderController implements Initializable{
 	private String jobNumber, name, jobtype;
 	private  double TM_cost;
 	private  double dailyCost;
+	private String date;
 	
 	
 	
@@ -146,23 +150,54 @@ public class WorkOrderController implements Initializable{
 		listOfWorkers = new ArrayList<String>();		
 				
 		employeelist = new ArrayList<EmployeeHours>();
-		toolsList = new ArrayList<Tools>();		
+		toolsList = new ArrayList<Tools>();	
+		
+		
 		
 	}	
 	
 	
 	
 	@FXML
-	public void check(){
-		System.out.println("Output after constructor was initialized " + jobNumber);
-		
+	public void check()throws SQLException, ParseException{
+		System.out.println("Output after constructor was initialized " + jobNumber);		
 		//formatting datepicker
-		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MMM dd, yyyy");
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MMM dd, yyyy");		
 		
 		if(datechooser.getValue() != null)
-			System.out.println(formatter.format(datechooser.getValue())); //printing preferred date format
+			System.out.println(datechooser.getValue()); //printing preferred date format
+		
+		//if job is completed mark the date
+		if(jobCompleted.isSelected()){
+			if(datechooser.getValue() != null){
+				
+				//formatting the date
+				formatter = DateTimeFormatter.ofPattern("MMM dd, yyyy");
+				date = formatter.format(datechooser.getValue());
+				connection.JobCompleted(date, jobNumber);
+				
+				System.out.println("Date was updated: " + date);
+				
+			}else{
+				MessageBox box = new MessageBox();
+				box.show("Date is not selected", "Error");
+			}
+		}		
+		else if(datechooser.getValue() != null && !connection.isJobStarted(jobNumber)){	//it is the date when job is started
+			
+			formatter = DateTimeFormatter.ofPattern("MMM dd, yyyy");
+			date = formatter.format(datechooser.getValue());
+			connection.JobStartDate(date, jobNumber);
+			
+			System.out.println("Start date is: "  + date);				
+		}
+		
+		
+		
 		
 	}
+	
+	
 
 
 	/**
@@ -175,6 +210,8 @@ public class WorkOrderController implements Initializable{
 		workType.setText(jobtype);
 		dailyTotal.setText("0.0");
 		ascendingTotal.setText(String.valueOf(TM_cost));
+		
+		
 		
 		//getting leaders
 		try {
@@ -218,18 +255,23 @@ public class WorkOrderController implements Initializable{
 		list = connection.getNameOfBlockStones();	//getting name of stones		
 		for(String s : list)	
 			makeBranch(s, blocks); //adding names under block & stones		
-		
 		stones = makeBranch("Natural Stones", masonrySupplies);
-		masonry = makeBranch("Masonry Supply", masonrySupplies);		
+		masonry = makeBranch("Masonry Supply", masonrySupplies);
+		
+		//Misc branch
 		miscellaneous = makeBranch("Miscellaneous", root);
+		
 		pipes = makeBranch("Pipes", root);
 		ADS = makeBranch("ADS", pipes);
 		pipe1_5 = makeBranch("1.5\" Pipes", pipes);
 		pipe2 = makeBranch("2\" Pipes", pipes);
 		pipe3 = makeBranch("3\" Pipes", pipes);
-		pipe4 = makeBranch("4\" Pipes", pipes);		
+		pipe4 = makeBranch("4\" Pipes", pipes);	
+		
+		//Vehicles and Equip branch
 		vehicles_eqipm = makeBranch("Vehicled & Equipment", root);
 		
+		//Woods branch
 		woods = makeBranch("Wood Products", root);
 		list = connection.getNameOfWoodProducts();
 		for(String s : list)
@@ -268,6 +310,17 @@ public class WorkOrderController implements Initializable{
 		toolTotalColumn.setCellValueFactory(new PropertyValueFactory<Tools, Double>("total"));
 		
 		
+		//checks if the job is finshed
+				try {
+					if(connection.isJobFinished(jobNumber)){
+						System.out.println(connection.isJobFinished(jobNumber));
+						jobCompleted.setSelected(true);
+						jobCompleted.setDisable(true);
+					}
+				} catch (SQLException | ParseException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
 	}
 	
 	/**
@@ -290,6 +343,8 @@ public class WorkOrderController implements Initializable{
 			try {
 				if(!name.equals(null) && !timein.equals(null) && !timeout.equals(null)){
 					System.out.println("add worker pressed" + name + timein + timeout);
+					
+					//if there is lunch break half hour will be subtracted
 					if(lunchbreak.isSelected()){
 						hours = getHours(timein, timeout) - 0.5;
 					}else{
@@ -298,9 +353,11 @@ public class WorkOrderController implements Initializable{
 					
 					double cost = connection.getCost(name);
 					double total = cost * hours;
-					TM_cost = TM_cost + total;
-					ascendingTotal.setText(String.valueOf(TM_cost));
 					
+					//updating daily and ascending total
+					TM_cost = TM_cost + total;
+					double new_cost = Math.round(TM_cost * 100.0) / 100.0;  //rounding to two decimal places
+					ascendingTotal.setText(String.valueOf(new_cost));					
 					dailyCost = dailyCost + total;
 					dailyTotal.setText(String.valueOf(dailyCost));
 					
@@ -340,8 +397,8 @@ public class WorkOrderController implements Initializable{
 			
 			//when employee is removed daily and ascending total will be subtracted
 			TM_cost = TM_cost - e.getTotal();
-			ascendingTotal.setText(String.valueOf(TM_cost));
-			
+			double new_cost = Math.round(TM_cost * 100.0) / 100.0;  //rounding to two decimal places
+			ascendingTotal.setText(String.valueOf(new_cost));			
 			dailyCost = dailyCost - e.getTotal();
 			dailyTotal.setText(String.valueOf(dailyCost));
 			
@@ -386,6 +443,14 @@ public class WorkOrderController implements Initializable{
 			if(str.length() != 0 && !str.equals(null) && amountfield.trim().length() !=0 && !amountfield.equals(null)){
 				amount = Double.parseDouble(amountfield);
 				total = t.getBilled() * amount;
+				
+				//updating daily and ascending totals
+				TM_cost = TM_cost + total;
+				double new_cost = Math.round(TM_cost * 100.0) / 100.0;	 //rounding to two decimal places
+				ascendingTotal.setText(String.valueOf(new_cost));
+				dailyCost = dailyCost + total;
+				dailyTotal.setText(String.valueOf(dailyCost));
+				
 				t.setAmount(amount);
 				t.setTotal(total);
 				toolsList.add(t);
@@ -412,13 +477,20 @@ public class WorkOrderController implements Initializable{
 	public void removeItem()throws SQLException{
 		System.out.println("Remove Item Was pressed");
 	
-		ObservableList<EmployeeHours> items;
-		items = toolstable.getItems();
-		
-		
+		ObservableList<EmployeeHours> items;		
 		try {
+			items = toolstable.getItems();
 			Tools t = (Tools) toolstable.getSelectionModel().getSelectedItem();
 			items.remove(t);
+			
+			//updating daily and ascending totals
+			TM_cost = TM_cost - t.getTotal();
+			double new_cost = Math.round(TM_cost * 100.0) / 100.0; //rounding to two decimal places
+			ascendingTotal.setText(String.valueOf(new_cost));
+			dailyCost = dailyCost - t.getTotal();
+			dailyTotal.setText(String.valueOf(dailyCost));
+			
+			
 			
 			for(int i = 0; i < toolsList.size(); i++){
 				if(t.equals(toolsList.get(i))){

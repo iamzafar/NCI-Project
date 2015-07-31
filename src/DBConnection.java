@@ -5,6 +5,8 @@
 
 import java.io.FileInputStream;
 import java.sql.*;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
@@ -840,7 +842,7 @@ public class DBConnection {
 		try{
 			myStmt = myConn.createStatement();			
 			myRs = myStmt.executeQuery("select jobnum, concat(lastname, \" \", firstname ) as name, invoice, jobcost, t_m, "
-					+ "completion, worktype, hours, materials, startdate, finishdate, concat(first, \" \", last) as leader "
+					+ "completion, worktype, hours, materials, startdate, finishdate, concat(first, \" \", last) as leader, profit "
 					+ "from client join job using(client_id) join employee using(employeeId);"); //sql query that returns all data from client table ordered by their last name
 			 
 			while (myRs.next()) {
@@ -907,8 +909,9 @@ public class DBConnection {
 		Date start = myResult.getDate("startdate");
 		Date finish =  myResult.getDate("finishdate");
 		String leader = myResult.getString("leader");
+		double profit = myResult.getDouble("profit");
 		
-		tempJob = new Joblist(jobnumber, name, invoice, jobcost, t_m, complete, workType, hours, material, start, finish, leader);
+		tempJob = new Joblist(jobnumber, name, invoice, jobcost, t_m, complete, workType, hours, material, start, finish, leader, profit);
 		
 		
 		return tempJob;
@@ -941,10 +944,151 @@ public class DBConnection {
 		}
 		finally{
 			close(prepStmt, myRs);
-		}
-		
+		}	
 		
 		return data;
+	}
+	
+	/**
+	 * 
+	 * @param date
+	 * @param jobnum
+	 * @throws SQLException
+	 * @throws ParseException
+	 */
+	public void JobCompleted(String date, String jobnum)throws SQLException, ParseException{
+		SimpleDateFormat format = new SimpleDateFormat("MMM dd, yyyy");
+		Date completeddate = new Date(format.parse(date).getTime());
+		
+		PreparedStatement prepStmt = null;
+		
+		try{
+			prepStmt = myConn.prepareStatement("UPDATE job SET finishdate =?  WHERE jobnum =?;");
+			prepStmt.setDate(1, completeddate);
+			prepStmt.setString(2, jobnum);			
+			prepStmt.executeUpdate();
+			
+			System.out.println("Job Finish date is: " + date);
+		}
+		catch(Exception e){
+			MessageBox box = new MessageBox();
+			box.show("Completed date was not inserted\n" + e.getMessage(), "Error");
+		}
+		finally{
+			close(prepStmt);
+		}	
+		
+		
+	}
+	/**
+	 * This is method will mark the beginning date of the job
+	 * @param date
+	 * @param jobnum
+	 * @throws SQLException
+	 * @throws ParseException
+	 */
+	public void JobStartDate(String date, String jobnum)throws SQLException, ParseException{
+		SimpleDateFormat format = new SimpleDateFormat("MMM dd, yyyy");
+		Date completeddate = new Date(format.parse(date).getTime());
+		
+		PreparedStatement prepStmt = null;
+		
+		try{
+			prepStmt = myConn.prepareStatement("UPDATE job SET startdate =?  WHERE jobnum =?;");
+			prepStmt.setDate(1, completeddate);
+			prepStmt.setString(2, jobnum);
+			
+			prepStmt.executeUpdate();
+			
+			System.out.println("Start date was changed to " + date);
+		}
+		catch(Exception e){
+			MessageBox box = new MessageBox();
+			box.show("Started date was not inserted\n" + e.getMessage(), "Error");
+		}
+		finally{
+			close(prepStmt);
+		}	
+		
+		
+	}
+	
+	
+	/********************************************************************************
+	 * This method checks whether the job is started or not
+	 * @param jobnum
+	 * @return true or false
+	 * @throws SQLException
+	 * @throws ParseException
+	 ********************************************************************************/
+	public boolean isJobStarted(String jobnum)throws SQLException, ParseException{
+		boolean started = false;
+		
+		
+		PreparedStatement prepStmt = null;
+		ResultSet myRs = null;
+		
+		try{
+			prepStmt = myConn.prepareStatement("SELECT startdate FROM job where jobnum =?;");
+			prepStmt.setString(1, jobnum);
+			
+			myRs = prepStmt.executeQuery();
+			
+			while(myRs.next()){
+				if(!myRs.getDate("startdate").equals(null)){
+					started = true;
+				}
+				
+			}
+		}
+		catch(Exception e){
+			System.out.println("Not started yet");
+		}
+		finally{
+			close(prepStmt, myRs);
+		}
+		
+		return started;
+	}
+	
+	/**
+	 * This method checks whether the job is finished or not
+	 * @param jobnum
+	 * @return
+	 * @throws SQLException
+	 * @throws ParseException
+	 */
+	public boolean isJobFinished(String jobnum)throws SQLException, ParseException{
+		boolean finished = false ;
+		
+		
+		PreparedStatement prepStmt = null;
+		ResultSet myRs = null;
+		
+		try{
+			prepStmt = myConn.prepareStatement("SELECT finishdate FROM job where jobnum =?;");
+			prepStmt.setString(1, jobnum);
+			
+			myRs = prepStmt.executeQuery();
+			
+			while(myRs.next()){
+				if(!myRs.getDate("startdate").equals(null)){
+					finished = true;
+					System.out.println("Finished");
+				}
+				else
+					finished = false ;
+				
+			}
+		}
+		catch(Exception e){
+			System.out.println("Not finished yet");
+		}
+		finally{
+			close(prepStmt, myRs);
+		}
+		
+		return finished;
 	}
 	
 	/**

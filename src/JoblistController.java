@@ -85,6 +85,9 @@ public class JoblistController implements Initializable{
 	@FXML
 	TableColumn<Joblist, String> leader;
 	
+	@FXML
+	TableColumn<Joblist, Double> profit;
+	
 	public JoblistController() {
 		// TODO Auto-generated constructor stub
 	}
@@ -121,6 +124,8 @@ public class JoblistController implements Initializable{
 		end_date.setCellValueFactory(new PropertyValueFactory<Joblist, Date>("enddate"));
 		
 		leader.setCellValueFactory(new PropertyValueFactory<Joblist, String>("leader"));
+		
+		profit.setCellValueFactory(new PropertyValueFactory<Joblist, Double>("profit"));
 		
 		
 		jobs = new ArrayList<Joblist>();
@@ -170,13 +175,25 @@ public class JoblistController implements Initializable{
 		stage.show();
 	}
 	
+	@FXML
+	public void back(ActionEvent event)throws IOException{
+		Parent parent = FXMLLoader.load(getClass().getResource("/fxml/Main.fxml"));
+		Scene scene = new Scene(parent);
+		Stage stage = (Stage)((Node) event.getSource()).getScene().getWindow();	
+		stage.hide();	
+		stage.setScene(scene);
+		stage.setTitle("Main");
+		stage.setResizable(false);
+		stage.show();
+	}
+	
 	/**
 	 * I am gonna use this method of creating of new job because with it joblist will be updated
 	 * @param event
 	 * @throws IOException
 	 */
 	@FXML
-	void newJob(ActionEvent event) throws IOException{
+	public void newJob(ActionEvent event) throws IOException{
 		Parent parent = FXMLLoader.load(getClass().getResource("/fxml/NewJob.fxml"));
 		Scene scene = new Scene(parent);
 		Stage stage = (Stage)((Node) event.getSource()).getScene().getWindow();	

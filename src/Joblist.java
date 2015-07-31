@@ -19,11 +19,13 @@ public class Joblist {
 	private Date startdate;
 	private Date enddate;
 	private String leader;
+	private double profit;
 	
 	
 	//costructor
 	public Joblist(int jobID, int jobnum, String clientName, double invoice, double cost, double T_M,
-			String completion, String worktype, double hours, double materials, Date startdate, Date enddate, String leader){
+			String completion, String worktype, double hours, double materials,
+			Date startdate, Date enddate, String leader, double profit){
 		this.jobID = jobID;
 		this.jobNum = jobnum;
 		this.clientName = clientName;
@@ -37,10 +39,12 @@ public class Joblist {
 		this.startdate  = startdate;
 		this.enddate = enddate;
 		this.leader = leader;
+		this.profit = profit;
 	}
 	
 	public Joblist(int jobnum, String clientName, double invoice, double cost, double T_M,
-			String completion, String worktype, double hours, double materials, Date startdate, Date enddate, String leader){
+			String completion, String worktype, double hours, double materials, 
+			Date startdate, Date enddate, String leader, double profit){
 		
 		this.jobNum = jobnum;
 		this.clientName = clientName;
@@ -54,8 +58,11 @@ public class Joblist {
 		this.startdate  = startdate;
 		this.enddate = enddate;
 		this.leader = leader;
+		this.profit = profit;
 	}
 	
+	
+
 	//generating getters and setters
 	public int getJobID() {
 		return jobID;
@@ -135,14 +142,21 @@ public class Joblist {
 	public void setLeader(String leader) {
 		this.leader = leader;
 	}
+	public double getProfit() {
+		return profit;
+	}
+
+	public void setProfit(double profit) {
+		this.profit = profit;
+	}
 		
 	@Override
 	public String toString() {
-		return "Joblist [jobID=" + jobID + ", jobNum=" + jobNum
+		return "Joblist jobID=" + jobID + ", jobNum=" + jobNum
 				+ ", clientName=" + clientName + ", invoice=" + invoice
 				+ ", cost=" + cost + ", T_M=" + T_M + ", completion="
 				+ completion + ", workType=" + workType + ", hours=" + hours
 				+ ", materials=" + materials + ", startdate=" + startdate
-				+ ", enddate=" + enddate + ", leader=" + leader;
+				+ ", enddate=" + enddate + ", leader=" + leader + ", profit=" + profit;
 	}
 }
