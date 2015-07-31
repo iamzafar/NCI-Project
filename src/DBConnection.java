@@ -915,6 +915,66 @@ public class DBConnection {
 		
 	}
 	
+	/**
+	 * 
+	 * @param jobnum
+	 * @return client name and type of job; data[0] is client name, data[1] is type of work 
+	 * @throws SQLException
+	 */
+	public String[] getClientName_WorkType(String jobnum)throws SQLException{
+		String []data = new String [2];		
+		
+		PreparedStatement prepStmt = null;
+		ResultSet myRs = null;
+		
+		try{
+			prepStmt = myConn.prepareStatement("SELECT concat(firstname, \" \", lastname) as name, worktype "
+					+ "FROM client join job using(client_id) where jobnum =?;");
+			prepStmt.setString(1, jobnum);
+			myRs = prepStmt.executeQuery();
+			
+			while(myRs.next()){
+				data[0] = myRs.getString("name");
+				data[1] = myRs.getString("worktype");
+			}
+			
+		}
+		finally{
+			close(prepStmt, myRs);
+		}
+		
+		
+		return data;
+	}
+	
+	/**
+	 * 
+	 * @return Time and Material cost
+	 * @throws SQLException
+	 */
+	public double getJobTMCost(String jobnum)throws SQLException{
+		double amount = 0.0;
+		
+		PreparedStatement prepStmt = null;
+		ResultSet myRs = null;
+		
+		try{
+			prepStmt = myConn.prepareStatement("SELECT t_m FROM job where jobnum =?;");
+			prepStmt.setString(1, jobnum);
+			
+			myRs = prepStmt.executeQuery();
+			
+			while(myRs.next()){
+				amount = myRs.getDouble("t_m");
+			}
+		}
+		finally{
+			close(prepStmt, myRs);
+		}		
+		
+		return amount;
+	}
+	
 	
 	
 	/********************************************************************************************************

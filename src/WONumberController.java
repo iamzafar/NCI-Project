@@ -22,16 +22,23 @@ public class WONumberController implements Initializable{
 	@FXML
 	Label error;
 	
+	DBConnection conn;
+	private double amount;
 	
 	
 	@FXML
 	public void submit(ActionEvent event) throws SQLException, Exception{
 		String number = jobnumber.getText();
+		conn = new DBConnection();
+		
+		amount = conn.getJobTMCost(number);
+		String [] data = new String[2];
+		data = conn.getClientName_WorkType(number);
 		
 		//verifying whether the input exists and it is number
-		if(number.trim().length() !=0 && isNumber(number) && (number.length() == 7)){
+		if(number.trim().length() !=0 && isNumber(number) && (number.length() == 7) && !data[0].equals(null) && !data[1].equals(null)){
 			FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/WorkOrder.fxml"));
-			WorkOrderController wo = new WorkOrderController(number, "dkjfhkjsdh", "adkfjhsdf");
+			WorkOrderController wo = new WorkOrderController(number, data[0], data[1], amount);
 			
 			loader.setController(wo);
 			Parent parent = loader.load();		
@@ -44,13 +51,8 @@ public class WONumberController implements Initializable{
 			stage.show();
 		}		
 		else
-			error.setVisible(true);
-			
-		
-		
-	}
-	
-	
+			error.setVisible(true);	
+	}	
 	
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {

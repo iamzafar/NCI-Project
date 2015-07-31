@@ -16,12 +16,21 @@
       <Group layoutX="6.0" layoutY="-15.0">
          <children>
             <Label fx:id="clientNameLabel" layoutX="152.0" layoutY="64.0" text="Label" />
-            <Label layoutX="80.0" layoutY="47.0" text="Job Nuber: " />
+            <Label layoutX="71.0" layoutY="47.0" text="Job Number: " textFill="#280aeb">
+               <font>
+                  <Font name="System Bold" size="12.0" />
+               </font></Label>
             <Label layoutX="413.0" layoutY="81.0" text="Leader of the Job" />
             <Label fx:id="jobNumberLabel" layoutX="152.0" layoutY="47.0" text="Label" />
             <Label fx:id="workType" layoutX="152.0" layoutY="81.0" text="Label" />
-            <Label layoutX="73.0" layoutY="64.0" text="Client Name:" />
-            <Label layoutX="107.0" layoutY="81.0" text="Type: " />
+            <Label layoutX="73.0" layoutY="64.0" text="Client Name:" textFill="#2709ea">
+               <font>
+                  <Font name="System Bold" size="12.0" />
+               </font></Label>
+            <Label layoutX="109.0" layoutY="81.0" prefHeight="17.0" prefWidth="34.0" text="Type: " textFill="#2709ea">
+               <font>
+                  <Font name="System Bold" size="12.0" />
+               </font></Label>
             <Label layoutX="480.0" layoutY="49.0" text="Date" />
             <DatePicker fx:id="datechooser" layoutX="522.0" layoutY="43.0" />
             <ComboBox fx:id="leaderList" layoutX="522.0" layoutY="77.0" prefHeight="25.0" prefWidth="174.0" promptText="Choose Leader" />
@@ -102,8 +111,8 @@
       <Group layoutX="-5.0" layoutY="25.0">
          <children>
             <Label layoutX="523.0" layoutY="613.0" text="DAILY TOTAL" />
-            <TextField layoutX="604.0" layoutY="609.0" prefHeight="25.0" prefWidth="97.0" />
-            <TextField layoutX="604.0" layoutY="644.0" prefHeight="25.0" prefWidth="97.0" />
+            <TextField fx:id="dailyTotal" layoutX="604.0" layoutY="609.0" prefHeight="25.0" prefWidth="97.0" />
+            <TextField fx:id="ascendingTotal" layoutX="604.0" layoutY="644.0" prefHeight="25.0" prefWidth="97.0" />
             <Button fx:id="summary" layoutX="244.0" layoutY="639.0" mnemonicParsing="false" onAction="#check" prefHeight="35.0" prefWidth="150.0" text="Go to Summary" />
             <Label layoutX="489.0" layoutY="648.0" text="ASCENDING TOTAL" />
          </children>

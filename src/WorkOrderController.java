@@ -36,6 +36,12 @@ public class WorkOrderController implements Initializable{
 	private Button summary;
 	
 	@FXML
+	TextField dailyTotal;
+	
+	@FXML
+	TextField ascendingTotal;
+	
+	@FXML
 	Label jobNumberLabel;
 	
 	@FXML
@@ -123,35 +129,28 @@ public class WorkOrderController implements Initializable{
 	
 	
 	
-	private String jobNumber,n;
+	private String jobNumber, name, jobtype;
+	private  double TM_cost;
+	private  double dailyCost;
 	
 	
 	
-	public WorkOrderController(String jobNumber, String clientName, String jobType) throws SQLException, Exception {
-		// TODO Auto-generated constructor stub
+	public WorkOrderController(String jobNumber, String clientName, String jobType, double cost) throws SQLException, Exception {		
 		
-		this.jobNumber = jobNumber; // existting job number
+		this.jobNumber = jobNumber; 
+		this.name = clientName;
+		this.jobtype = jobType;
+		this.TM_cost = cost;
+		
 		connection = new DBConnection(); //connection to db
-		listOfWorkers = new ArrayList<String>();
-		
-		//tree
-		/*root = new TreeItem<String>();
-		root.setExpanded(true);
-		masonrySupplies = new TreeItem<String>();
-		bulkGoods = new TreeItem<String>();*/
-		
+		listOfWorkers = new ArrayList<String>();		
+				
 		employeelist = new ArrayList<EmployeeHours>();
-		toolsList = new ArrayList<Tools>();
-		
-		
+		toolsList = new ArrayList<Tools>();		
 		
 	}	
 	
 	
-	//for testing
-	public void set(String str){
-		jobNumber = str;
-	}	
 	
 	@FXML
 	public void check(){
@@ -171,14 +170,11 @@ public class WorkOrderController implements Initializable{
 	 */
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
-		// TODO Auto-generated method stub
-		jobNumberLabel.setText(jobNumber);
-		clientNameLabel.setText("Client name");
-		workType.setText("Work type");
-		
-		
-		
-		
+		jobNumberLabel.setText(jobNumber); 
+		clientNameLabel.setText(name);
+		workType.setText(jobtype);
+		dailyTotal.setText("0.0");
+		ascendingTotal.setText(String.valueOf(TM_cost));
 		
 		//getting leaders
 		try {
@@ -197,10 +193,7 @@ public class WorkOrderController implements Initializable{
 		
 		//setting hours
 		fromHoursList.setItems(hours());
-		toHoursList.setItems(hours());
-		
-		
-		
+		toHoursList.setItems(hours());		
 		
 		
 		//setup tree of tools	
@@ -286,6 +279,7 @@ public class WorkOrderController implements Initializable{
 		String name;
 		String timein;
 		String timeout;
+		double hours = 0.0;
 		
 		
 			name = workerList.getValue();
@@ -296,24 +290,35 @@ public class WorkOrderController implements Initializable{
 			try {
 				if(!name.equals(null) && !timein.equals(null) && !timeout.equals(null)){
 					System.out.println("add worker pressed" + name + timein + timeout);
+					if(lunchbreak.isSelected()){
+						hours = getHours(timein, timeout) - 0.5;
+					}else{
+						 hours = getHours(timein, timeout);
+						 }
+					
+					double cost = connection.getCost(name);
+					double total = cost * hours;
+					TM_cost = TM_cost + total;
+					ascendingTotal.setText(String.valueOf(TM_cost));
+					
+					dailyCost = dailyCost + total;
+					dailyTotal.setText(String.valueOf(dailyCost));
+					
+					System.out.println(name + " cost is: "  + cost + ", hours " + (hours - 0.5 )+ ", total = " + total);
+					EmployeeHours worker = new EmployeeHours(name, timein, timeout, hours, cost, total);		
+					employeelist.add(worker);
+					System.out.println("array size " + employeelist.size());
+					
+					
+					workerstable.setItems(loadWorker(employeelist));
 				}
 			} catch (Exception e) {
 				// TODO: handle exception
 				MessageBox.show("Input was incorrect while adding worker", "Error");
 			}
 			
-			
-		double hours = getHours(timein, timeout);
-		double cost = connection.getCost(name);
-		double total = cost * hours;
-		
-		System.out.println(name + " cost is: "  + cost + ", hours " + hours + ", total = " + total);
-		EmployeeHours worker = new EmployeeHours(name, timein, timeout, hours, cost, total);		
-		employeelist.add(worker);
-		System.out.println("array size " + employeelist.size());
 		
 		
-		workerstable.setItems(loadWorker(employeelist));
 	
 	}
 	
@@ -332,6 +337,13 @@ public class WorkOrderController implements Initializable{
 		try {
 			EmployeeHours e = (EmployeeHours)(workerstable.getSelectionModel().getSelectedItem()); //get selected item from the table
 			items.remove(e);//deleting from the table
+			
+			//when employee is removed daily and ascending total will be subtracted
+			TM_cost = TM_cost - e.getTotal();
+			ascendingTotal.setText(String.valueOf(TM_cost));
+			
+			dailyCost = dailyCost - e.getTotal();
+			dailyTotal.setText(String.valueOf(dailyCost));
 			
 			//removing it from the array
 			for(int i = 0; i < employeelist.size(); i++){
@@ -364,11 +376,13 @@ public class WorkOrderController implements Initializable{
 		System.out.println("Add Item Was pressed");		
 		
 		
-		String str = tools.getSelectionModel().getSelectedItem().getValue(); //getting the name of selected item
-		Tools t = connection.getTool(str);	//getting the information of the item by the given name
 		String amountfield = itemAmount.getText();	//getting the amount of items
 		
 		try {
+			String str = tools.getSelectionModel().getSelectedItem().getValue(); //getting the name of selected item
+			Tools t = connection.getTool(str);	//getting the information of the item by the given name
+				
+			
 			if(str.length() != 0 && !str.equals(null) && amountfield.trim().length() !=0 && !amountfield.equals(null)){
 				amount = Double.parseDouble(amountfield);
 				total = t.getBilled() * amount;
@@ -385,7 +399,7 @@ public class WorkOrderController implements Initializable{
 			MessageBox box = new MessageBox();
 			box.show("Incorrect Input", "Error");
 		}
-		System.out.println("Selected item: "+str +"and amount = "+ amount +"\n" + t);
+		//System.out.println("Selected item: "+str +"and amount = "+ amount +"\n" + t);
 		
 		
 	}
@@ -429,8 +443,7 @@ public class WorkOrderController implements Initializable{
 	private TreeItem<String> makeBranch(String title, TreeItem<String> parent){
 		TreeItem<String> item = new TreeItem<String>(title);
 		item.setExpanded(false);
-		parent.getChildren().add(item);
-		
+		parent.getChildren().add(item);		
 		return item;
 	}
 	
@@ -441,23 +454,18 @@ public class WorkOrderController implements Initializable{
 	 **************************************************************************/
 	private ObservableList<String> loadName(List<String> list){
 		
-		ObservableList<String> names = FXCollections.observableArrayList(); 
-		
+		ObservableList<String> names = FXCollections.observableArrayList(); 		
 		//adding all names to the obsrv list
 		for(String str : list){
 			names.add(str);
-		}
-		
+		}		
 		return names;
 	}
 	
 	//this method returns am/pm list
 	private ObservableList<String> toAmpm(){
-		ObservableList<String> list = FXCollections.observableArrayList();
-		
-		list.addAll("AM", "PM");
-		
-		
+		ObservableList<String> list = FXCollections.observableArrayList();		
+		list.addAll("AM", "PM");		
 		return  list;
 	}
 	
@@ -471,12 +479,8 @@ public class WorkOrderController implements Initializable{
 		
 		for(EmployeeHours e : empl){
 			worker.add(e);
-		}	
-		
-		
-		
-		return worker;
-		
+		}			
+		return worker;		
 	}
 	
 	/**
@@ -487,9 +491,9 @@ public class WorkOrderController implements Initializable{
 	private ObservableList<Tools> loadItem(List<Tools> items){
 		ObservableList<Tools> tool = FXCollections.observableArrayList();
 		
-		for(Tools t : items)
+		for(Tools t : items){
 			tool.add(t);
-		
+		}
 		return tool;
 		
 	}
@@ -516,14 +520,12 @@ public class WorkOrderController implements Initializable{
 	 * @throws ParseException 
 	 **********************************************************************/
 	private double getHours(String in, String out) throws ParseException{
-		double hours = 0.0;		
-		
+		double hours = 0.0;			
 		SimpleDateFormat frmt = new SimpleDateFormat("hh:mm a");
 		java.util.Date date1 = frmt.parse(in);
 		java.util.Date date2 = frmt.parse(out);
 		
-		hours = Math.round((Math.abs(date2.getTime() - date1.getTime())/3600000.0)*100.0)/100.0;
-		
+		hours = Math.round((Math.abs(date2.getTime() - date1.getTime())/3600000.0)*100.0)/100.0;		
 		
 		return hours;
 		
