@@ -116,6 +116,23 @@ public class ClientTableController implements Initializable{
 		Email.setCellValueFactory(new PropertyValueFactory<Client, String>("email"));
 		makeEmailEditable(Email);	// email column becomes editable
 		
+		ClientTable cltable;
+		
+		try {
+			dbconnection = new DBConnection(); //establishes connection to the DB
+			clientlist = new ArrayList<Client>();	
+			clientlist = dbconnection.getAllClients();
+			cltable = new ClientTable(clientlist);
+			ObservableList<Client> data = FXCollections.observableArrayList(); //creating new ObservableList
+			data = cltable.loadClients(); //storing list of clients from ClientTable class to the ObservableList		
+			
+			table.setItems(data);	
+			
+		} catch (Exception e) {
+			MessageBox box = new MessageBox();
+			box.show("Could not connect to Database", "Error");
+		}
+		
 		
 	}
 	
@@ -128,14 +145,9 @@ public class ClientTableController implements Initializable{
 	public void search() throws SQLException, Exception{
 		ClientTable cltable;		
 		
-		try {
-			dbconnection = new DBConnection(); //establishes connection to the DB
-		} catch (Exception e) {
-			JOptionPane.showMessageDialog(null, "Database connection Failed!!\n\n" + e);	//if something is wrong with connection message dialog will pop up
-		}
-		
 		//actual searching algorithm	
 		try {
+			dbconnection = new DBConnection(); //establishes connection to the DB
 			clientlist = new ArrayList<Client>();			
 			//**********************************************************
 			//I have to make it search by firstname too!!!
@@ -154,7 +166,8 @@ public class ClientTableController implements Initializable{
 			}			
 			
 		} catch (Exception e) {
-			JOptionPane.showMessageDialog(null, e);
+			MessageBox box = new MessageBox();
+			box.show("Could not connect to Database", "Error");
 		}
 		
 		/**sending clients, which should be displayed, to the ClientTable class 

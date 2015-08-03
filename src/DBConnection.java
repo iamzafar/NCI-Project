@@ -894,6 +894,89 @@ public class DBConnection {
 		
 	}
 	
+	/**
+	 * Getting raw cost of given the job
+	 * @param jobnum
+	 * @return
+	 * @throws SQLException
+	 */
+	public double getJobCost(int jobnum)throws SQLException{
+		double cost = 0.0;
+		//select jobcost from job where jobnum = 1500401;
+		PreparedStatement myStmt = null;
+		ResultSet myRs = null;
+		
+		try{
+			myStmt = myConn.prepareStatement("select jobcost from job where jobnum =?;");
+			myStmt.setInt(1, jobnum);
+			
+			myRs = myStmt.executeQuery();			
+			
+			while(myRs.next()){
+				cost = myRs.getDouble("jobcost");
+			}
+		}
+		finally {
+			close(myStmt, myRs);
+		}
+	
+		return cost;
+	}
+	
+	/**
+	 * Updating Profit Column
+	 * @param jobnum
+	 * @param profit
+	 * @throws SQLException
+	 */
+	public void setJobProfit(int jobnum,double profit)throws SQLException{
+		//update job set profit = 50 where jobnum = 1500503;
+		
+		PreparedStatement myStmt = null;
+		
+		try{
+			myStmt = myConn.prepareStatement("update job set profit=? where jobnum =?;");
+			myStmt.setDouble(1, profit);
+			myStmt.setInt(2, jobnum);
+			
+			myStmt.executeUpdate();
+		}
+		finally {
+			close(myStmt);
+		}
+	}
+	
+	/**
+	 * Getting all job which are not invoiced yet
+	 * @return
+	 * @throws Exception
+	 */
+	public List<Joblist> getNotInvoiced()throws Exception{
+		List<Joblist> list = new ArrayList<Joblist>();
+		Statement myStmt = null;
+		ResultSet myRs = null;
+		
+		
+		try{
+			myStmt = myConn.createStatement();
+			myRs = myStmt.executeQuery("select jobnum, concat(lastname, \" \", firstname ) as name, invoice, jobcost, t_m, "
+					+ "completion, worktype, hours, materials, startdate, finishdate, concat(first, \" \", last) as leader, profit "
+					+ "from client join job using(client_id) join employee using(employeeId) where isnull(invoice);");
+			
+			while(myRs.next()){
+				Joblist job = convertRowToJob(myRs);
+				list.add(job);
+			}
+			
+		}
+		finally {
+			close(myStmt, myRs);
+		}
+		
+		return list;
+	}
+	
+	
 	/**********************************************************************************************
 	 * 
 	 * @param jobnum
@@ -1072,7 +1155,10 @@ public class DBConnection {
 			while(myRs.next()){
 				if(myRs.getInt("value") != 0){
 					started = true;
+					System.out.println("Job is started");
 				}
+				else
+					System.out.println("Job: "+jobnum + " --> Not Started");
 				
 			}
 		}
@@ -1099,29 +1185,29 @@ public class DBConnection {
 		
 		PreparedStatement prepStmt = null;
 		ResultSet myRs = null;
-		
-		try{
+
+		try {
 			prepStmt = myConn.prepareStatement("SELECT finishdate, ifnull(finishdate, 0) as value FROM job where jobnum =?;");
 			prepStmt.setString(1, jobnum);
-			
+
 			myRs = prepStmt.executeQuery();
-			
-			while(myRs.next()){
-				if(myRs.getInt("value") != 0){
+
+			while (myRs.next()) {
+				if (myRs.getInt("value") != 0) {
 					finished = true;
-					System.out.println("Job Finished");
-				}			
+					System.out.println("Job is finished");
+				}
 			}
-		}
-		catch(Exception e){
-			System.out.println("Not finished yet");
-		}
-		finally{
+		} catch (Exception e) {
+
+		} finally {
 			close(prepStmt, myRs);
 		}
-		
+
 		return finished;
 	}
+	
+	
 	
 	/**
 	 * 

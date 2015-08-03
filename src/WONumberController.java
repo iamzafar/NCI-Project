@@ -33,7 +33,7 @@ public class WONumberController implements Initializable{
 		
 		amount = conn.getJobTMCost(number);
 		String [] data = new String[2];
-		data = conn.getClientName_WorkType(number);
+		data = conn.getClientName_WorkType(number); //getting client`s name and type of work for the job
 		
 		//verifying whether the input exists and it is number
 		if(number.trim().length() !=0 && isNumber(number) && (number.length() == 7) && !data[0].equals(null) && !data[1].equals(null)){

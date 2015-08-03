@@ -1,9 +1,12 @@
 import java.io.IOException;
 import java.net.URL;
 import java.sql.Date;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
+
+import com.sun.javafx.image.impl.ByteIndexed.Getter;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -15,6 +18,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.CheckBox;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.SplitPane;
 import javafx.scene.control.TableColumn;
@@ -45,6 +49,9 @@ public class JoblistController implements Initializable{
 	
 	@FXML
 	MenuItem report;
+	
+	@FXML
+	CheckBox notInvoiced;
 	
 	@FXML
 	TableView joblist;
@@ -138,7 +145,7 @@ public class JoblistController implements Initializable{
 			MessageBox box = new MessageBox();
 			box.show("Could not connect to database\n" + e, "Error");
 		}
-		
+
 		try {
 			joblist.setItems(LoadJoblist(jobs));
 		} catch (Exception e) {
@@ -147,6 +154,7 @@ public class JoblistController implements Initializable{
 			box.show("Could not Load joblist to the table\n" + e, "Error");
 			e.printStackTrace();
 		}
+		
 		
 	}
 	
@@ -204,6 +212,54 @@ public class JoblistController implements Initializable{
 		stage.show();
 	}
 	
+	@FXML
+	public void checkNotInvoiced()throws Exception{		
+		System.out.println("Not invoiced was checked\nGetting query...");
+		
+		List<Joblist> list = new ArrayList<Joblist>();
+		connection = new DBConnection();
+		
+		if(notInvoiced.isSelected()){
+			try {
+				list = connection.getNotInvoiced();	
+			} catch (Exception e) {
+				// TODO: handle exception
+				MessageBox box = new MessageBox();
+				box.show("Could not connect to database\n" + e, "Error");
+			}
+
+			try {
+				joblist.setItems(LoadJoblist(list));
+			} catch (Exception e) {
+				// TODO: handle exception
+				MessageBox box = new MessageBox();
+				box.show("Could not Load joblist to the table\n" + e, "Error");
+				e.printStackTrace();
+			}
+		}else if(!notInvoiced.isSelected()){
+			try {
+				list = connection.getAllJob();
+			} catch (Exception e) {
+				// TODO: handle exception
+				MessageBox box = new MessageBox();
+				box.show("Could not connect to database\n" + e, "Error");
+			}
+
+			try {
+				joblist.setItems(LoadJoblist(list));
+			} catch (Exception e) {
+				// TODO: handle exception
+				MessageBox box = new MessageBox();
+				box.show("Could not Load joblist to the table\n" + e, "Error");
+				e.printStackTrace();
+			}
+		}
+		
+		
+		
+		
+	}
+	
 	
 	//this method will return observable list of objects that will be inserted into the table view
 	private ObservableList<Joblist> LoadJoblist(List<Joblist> jobs){
@@ -231,20 +287,56 @@ public class JoblistController implements Initializable{
 			public void handle(CellEditEvent<Joblist, Double> event) {
 				// TODO Auto-generated method stub
 				int jobnum = ((Joblist) event.getTableView().getItems().get(event.getTablePosition().getRow())).getJobNum();
-				double amount = event.getNewValue();
-				System.out.println("new invoice amount= " + amount);
+				double billed = event.getNewValue();
+				double jobcost = 0.0;
+				System.out.println("new invoice amount= " + billed);
 				
-				((Joblist) event.getTableView().getItems().get(event.getTablePosition().getRow())).setInvoice(amount);
+				((Joblist) event.getTableView().getItems().get(event.getTablePosition().getRow())).setInvoice(billed);
 				
 				try {
-					connection.changeInvoice(jobnum, amount);
+					jobcost = connection.getJobCost(jobnum);
+					System.out.println("Raw Cost of job " + jobnum + " is " + jobcost);
+				} catch (SQLException e1) {
+					// TODO Auto-generated catch block
+					MessageBox box = new MessageBox();
+					box.show("Could not get Raw Cost of job: " + jobnum, "Error");
+				}
+				
+				//actual calculation
+				double profit =  Math.round((((billed -jobcost) / billed) * 100) * 100.0) / 100.0;
+				
+				System.out.println("Invoiced: " + billed + ", raw cost: " + jobcost + ", profit: "+ profit);				
+				
+				 ((Joblist) event.getTableView().getItems().get(event.getTablePosition().getRow())).setProfit(profit);
+				try {
+					connection.changeInvoice(jobnum, billed);
 				} catch (Exception e) {
 					// TODO: handle exception
 					e.printStackTrace();
 				}
+				
+				updateProfit(jobnum, profit);
+				System.out.println("Profit of job "+jobnum+" was updated successfully");
 			}
-		});
+		});		
 		
+		
+	}
+	
+	
+	/**
+	 * 
+	 * @param jobnum
+	 * @param profit
+	 */
+	private void updateProfit(int jobnum, double profit){
+		try {
+			connection.setJobProfit(jobnum, profit);
+		} catch (Exception e) {
+			// TODO: handle exception
+			MessageBox box = new MessageBox();
+			box.show("Could not upate job profit", "Error");
+		}
 	}
 	
 	
