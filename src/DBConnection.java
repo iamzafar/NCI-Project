@@ -554,24 +554,55 @@ public class DBConnection {
 		}
 	}
 	
-	/************************************************************************************
-	 * Returns the cost of the employee by the given name
+	/**
+	 * returns id of employee
 	 * @param name
 	 * @return
+	 * @throws SQLException
+	 */
+	public int getEmployeeId(String name)throws SQLException{
+		int id = 0;
+		PreparedStatement prpStmt = null;
+		ResultSet myRs = null;
+		
+		try{
+			prpStmt = myConn.prepareStatement("SELECT employeeId FROM employee where concat(first, \" \", last) =?;");
+			prpStmt.setString(1, name);
+			
+			myRs = prpStmt.executeQuery();
+			
+			while(myRs.next()){
+				id = myRs.getInt("employeeId");
+			}
+		}
+		finally {
+			close(prpStmt, myRs);
+		}
+		
+		
+		return id;
+	}
+	
+	/************************************************************************************
+	 * Returns the cost and hourly rate of the employee by the given name
+	 * @param name
+	 * @return
+	 * @throws SQLException 
 	 ************************************************************************************/
-	public double getCost(String name){
-		double number = 0.0;
+	public double [] getCostHourly(String name) throws SQLException{
+		double [] number = new double [2];
 		PreparedStatement myStmt = null;
 		ResultSet myRs = null;
 		
 		try {
-			myStmt = myConn.prepareStatement("select cost from employee where concat(first, \" \", last) =?;");
+			myStmt = myConn.prepareStatement("select cost, hourly from employee where concat(first, \" \", last) =?;");
 			myStmt.setString(1, name);
 			
 			myRs = myStmt.executeQuery();
 			
 			while(myRs.next()){
-				number = myRs.getDouble("cost");
+				number[0] = myRs.getDouble("cost");
+				number[1] = myRs.getDouble("hourly");
 			}
 			
 		} catch (Exception e) {
@@ -579,6 +610,9 @@ public class DBConnection {
 			MessageBox box = new MessageBox();
 			
 			box.show("Cannot get the cost from the employee table", "Error");
+		}
+		finally {
+			close(myStmt, myRs);
 		}
 		
 		
@@ -617,6 +651,8 @@ public class DBConnection {
 			close(myStmt, myRs);
 		}
 	}
+	
+	
 	
 	
 	/********************************************************************************
@@ -1022,20 +1058,19 @@ public class DBConnection {
 	 * @throws ParseException
 	 ********************************************************************************/
 	public boolean isJobStarted(String jobnum)throws SQLException, ParseException{
-		boolean started = false;
-		
+		boolean started = false;		
 		
 		PreparedStatement prepStmt = null;
 		ResultSet myRs = null;
 		
 		try{
-			prepStmt = myConn.prepareStatement("SELECT startdate FROM job where jobnum =?;");
+			prepStmt = myConn.prepareStatement("SELECT startdate, ifnull(startdate, 0) as value FROM job where jobnum =?;");
 			prepStmt.setString(1, jobnum);
 			
 			myRs = prepStmt.executeQuery();
 			
 			while(myRs.next()){
-				if(!myRs.getDate("startdate").equals(null)){
+				if(myRs.getInt("value") != 0){
 					started = true;
 				}
 				
@@ -1066,19 +1101,16 @@ public class DBConnection {
 		ResultSet myRs = null;
 		
 		try{
-			prepStmt = myConn.prepareStatement("SELECT finishdate FROM job where jobnum =?;");
+			prepStmt = myConn.prepareStatement("SELECT finishdate, ifnull(finishdate, 0) as value FROM job where jobnum =?;");
 			prepStmt.setString(1, jobnum);
 			
 			myRs = prepStmt.executeQuery();
 			
 			while(myRs.next()){
-				if(!myRs.getDate("startdate").equals(null)){
+				if(myRs.getInt("value") != 0){
 					finished = true;
-					System.out.println("Finished");
-				}
-				else
-					finished = false ;
-				
+					System.out.println("Job Finished");
+				}			
 			}
 		}
 		catch(Exception e){
@@ -1149,6 +1181,37 @@ public class DBConnection {
 		}
 	}
 	
+	/**
+	 * Daily input of the data into the joblist
+	 * @param jobnum
+	 * @param leader
+	 * @param RawCost
+	 * @param TM
+	 * @param hours
+	 * @param materials
+	 * @throws SQLException
+	 */
+	public void EditInputinJoblist(String jobnum, String leader, double RawCost, double TM, double hours, double materials)throws SQLException{
+		PreparedStatement prepStmt = null;
+		int emplID = getEmployeeId(leader);
+		
+		try{
+			prepStmt = myConn.prepareStatement("update job set jobcost =?, t_m =?, hours =?, materials =?, employeeId =? where jobnum =?;");
+			prepStmt.setDouble(1, RawCost);
+			prepStmt.setDouble(2, TM);
+			prepStmt.setDouble(3, hours);
+			prepStmt.setDouble(4, materials);
+			prepStmt.setInt(5, emplID);
+			prepStmt.setString(6, jobnum);
+			
+			prepStmt.executeUpdate();
+		}
+		finally{
+			close(prepStmt);
+		}
+		
+	}
+	
 	
 	
 	/**
@@ -1206,7 +1269,7 @@ public class DBConnection {
 	 * 	----------------------------TOOLS STARTS HERE------------------------------------------
 	 ********************************************************************************************************/
 	
-	public List<Tools> getAllBlockStones() throws SQLException{
+	/*public List<Tools> getAllBlockStones() throws SQLException{
 		List<Tools> list = new ArrayList<Tools>();
 		
 		Statement myStmt = null;
@@ -1232,7 +1295,7 @@ public class DBConnection {
 		
 		return list;
 		
-	}
+	}*/
 	
 	/**
 	 * Returns tool by the given name
@@ -1246,7 +1309,7 @@ public class DBConnection {
 		ResultSet myRs = null;
 		
 		try {
-			prepStmt = myConn.prepareStatement("SELECT * FROM sample.tools where name =?;");
+			prepStmt = myConn.prepareStatement("SELECT * FROM tools where name =?;");
 			prepStmt.setString(1, name);
 			
 			
@@ -1416,8 +1479,9 @@ public class DBConnection {
 		String name = myRs.getString("name");
 		String each = myRs.getString("Each");		
 		double billed = myRs.getDouble("billed");
+		double cost = myRs.getDouble("cost");
 		
-		tool = new Tools(id, name, each, billed);
+		tool = new Tools(id, name, each, cost, billed);
 		
 		return tool;
 	}

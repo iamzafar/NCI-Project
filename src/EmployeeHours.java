@@ -6,17 +6,24 @@ public class EmployeeHours {
 	private double hours;
 	private double cost;
 	private double total;
-	
-	
+	private double hourly;
+	private double hourlytotal;
+
+
 	public EmployeeHours(String name, String timein, String timeout, double hours,
-			double cost, double total){
+			double cost, double hourly, double total, double hourlytotal){
 		this.name = name;
 		this.timein = timein;
 		this.timeout = timeout;
 		this.hours = hours;
 		this.cost  = cost;
 		this.total = total;
-	}
+		this.hourly = hourly;
+		this.hourlytotal = hourlytotal;
+		}
+
+
+	
 
 
 	//getters and setters
@@ -78,11 +85,28 @@ public class EmployeeHours {
 		this.total = total;
 	}
 	
+	public double getHourly() {
+		return hourly;
+	}
+
+
+	public void setHourly(double hourly) {
+		this.hourly = hourly;
+	}
+	
+	public double getHourlytotal() {
+		return hourlytotal;
+	}
+	
+	public void setHourlytotal(double hourlytotal) {
+		this.hourlytotal = hourlytotal;
+	}
+	
 	@Override
 	public String toString() {
 		return "EmployeeHours [name=" + name + ", timein=" + timein
 				+ ", timeout=" + timeout + ", hours=" + hours + ", cost="
-				+ cost + ", total=" + total + "\n"; 
+				+ cost +", hourly=" + hourly + ", total=" + total + ", hourly total="+ hourlytotal+"\n"; 
 	}
 
 	

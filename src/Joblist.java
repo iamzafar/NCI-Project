@@ -2,7 +2,6 @@ import java.sql.Date;
 
 //class for the job list
 
-
 public class Joblist {
 
 	

@@ -8,28 +8,35 @@ public class Tools {
 	private int ID;
 	private String name;
 	private String unit;
+	private double cost;
 	private double billed;
 	private double amount;
 	private double total;
 	
 	
 	//constructor
-	public Tools(int ID, String name, String unit, double billed, double amount, double total){
+	public Tools(int ID, String name, String unit,double cost, double billed, double amount, double total){
 		this.ID = ID;
 		this.name = name;
 		this.unit = unit;
+		this.cost = cost;
 		this.billed = billed;
 		this.amount = amount;
 		this.total = total;
 	}	
 
 
-	public Tools(int iD, String name, String unit, double billed) {		
+	public Tools(int iD, String name, String unit,double cost, double billed) {		
 		ID = iD;
 		this.name = name;
 		this.unit = unit;
+		this.cost = cost;
 		this.billed = billed;
+		
 	}
+
+
+	
 
 
 	//getters and setters
@@ -69,11 +76,17 @@ public class Tools {
 	public void setTotal(double total) {
 		this.total = total;
 	}	
+	public double getCost() {
+		return cost;
+	}
+	public void setCost(double cost) {
+		this.cost = cost;
+	}
 	
 	//toString()
 	@Override
 	public String toString() {
-		return "Tools [ID=" + ID + ", name=" + name + ", unit=" + unit
+		return "Tools [ID=" + ID + ", name=" + name + ", unit=" + unit + ", cost=" + cost
 				+ ", billed=" + billed + ", amount=" + amount + ", total="
 				+ total + "]\n";
 	}
