@@ -496,6 +496,38 @@ public class DBConnection {
 	}
 	
 	
+	public List<String> searchEmployee(String str)throws SQLException{
+		List<String> names = new ArrayList<String>();
+		
+		PreparedStatement myStmt = null;
+		ResultSet myRs = null;
+		
+		try{
+			str += "%";
+			myStmt = myConn.prepareStatement("SELECT concat(first, \" \", last) name FROM employee where last like ?;");
+			
+			myStmt.setString(1, str);
+			
+			myRs = myStmt.executeQuery();
+			
+			while(myRs.next()){
+				String s = myRs.getString("name");
+				if(!s.equals(null)){
+					names.add(s);
+				}
+				
+			}
+		}		
+		finally {
+			close(myStmt, myRs);
+		}
+		
+		
+		
+		return names;
+	}
+	
+	
 	
 	/****************************************************************************************************
 	 * This method converts output from the database in the client object
@@ -877,7 +909,7 @@ public class DBConnection {
 		
 		try{
 			myStmt = myConn.createStatement();			
-			myRs = myStmt.executeQuery("select jobnum, concat(lastname, \" \", firstname ) as name, invoice, jobcost, t_m, "
+			myRs = myStmt.executeQuery("select jobId, jobnum, concat(lastname, \" \", firstname ) as name, invoice, jobcost, t_m, "
 					+ "completion, worktype, hours, materials, startdate, finishdate, concat(first, \" \", last) as leader, profit "
 					+ "from client join job using(client_id) join employee using(employeeId);"); //sql query that returns all data from client table ordered by their last name
 			 
@@ -890,6 +922,26 @@ public class DBConnection {
 		}
 		finally {
 			close(myStmt, myRs);
+		}
+		
+	}
+	
+	/**
+	 * Deleting job by the given jobId
+	 * @param id
+	 * @throws SQLException
+	 */
+	public void deleteJob(int id)throws SQLException{
+		PreparedStatement myStmt = null;
+		
+		try{
+			myStmt = myConn.prepareStatement("delete from job where jobId =?;");
+			myStmt.setInt(1, id);
+			
+			myStmt.executeUpdate();
+		}
+		finally {
+			close(myStmt);
 		}
 		
 	}
@@ -959,7 +1011,7 @@ public class DBConnection {
 		
 		try{
 			myStmt = myConn.createStatement();
-			myRs = myStmt.executeQuery("select jobnum, concat(lastname, \" \", firstname ) as name, invoice, jobcost, t_m, "
+			myRs = myStmt.executeQuery("select jobId, jobnum, concat(lastname, \" \", firstname ) as name, invoice, jobcost, t_m, "
 					+ "completion, worktype, hours, materials, startdate, finishdate, concat(first, \" \", last) as leader, profit "
 					+ "from client join job using(client_id) join employee using(employeeId) where isnull(invoice);");
 			
@@ -1015,7 +1067,7 @@ public class DBConnection {
 	private Joblist convertRowToJob(ResultSet myResult) throws SQLException{
 		Joblist tempJob = null;
 		
-		 
+		int id = myResult.getInt("jobId"); 
 		int jobnumber = myResult.getInt("jobnum");
 		String name = myResult.getString("name");
 		double invoice = myResult.getDouble("invoice");
@@ -1030,7 +1082,7 @@ public class DBConnection {
 		String leader = myResult.getString("leader");
 		double profit = myResult.getDouble("profit");
 		
-		tempJob = new Joblist(jobnumber, name, invoice, jobcost, t_m, complete, workType, hours, material, start, finish, leader, profit);
+		tempJob = new Joblist(id,jobnumber, name, invoice, jobcost, t_m, complete, workType, hours, material, start, finish, leader, profit);
 		
 		
 		return tempJob;
@@ -1130,6 +1182,47 @@ public class DBConnection {
 		}	
 		
 		
+	}
+	
+	/**
+	 * This method returns jobs that are finished
+	 * @param startdate
+	 * @param enddate
+	 * @return
+	 * @throws SQLException
+	 * @throws ParseException
+	 */
+	public List<Joblist> getCompletedJobs(String startdate, String enddate)throws SQLException, ParseException{
+		System.out.println(startdate +" " +enddate);
+		List<Joblist> list = new ArrayList<Joblist>();
+		SimpleDateFormat format = new SimpleDateFormat("MMM dd, yyyy");
+		Date start = new Date(format.parse(startdate).getTime());
+		Date end = new Date(format.parse(enddate).getTime());
+
+		PreparedStatement prepStmt = null;
+		ResultSet myRs = null;
+		
+		try{
+			prepStmt = myConn.prepareStatement("select jobId, jobnum, concat(lastname, \" \", firstname ) as name, invoice, jobcost, t_m, "
+					+ "completion, worktype, hours, materials, startdate, finishdate, concat(first, \" \", last) as leader, profit "
+					+ "from client join job using(client_id) join employee using(employeeId) where startdate >= ? AND finishdate <= ?;");
+			prepStmt.setDate(1, start);
+			prepStmt.setDate(2, end);
+			
+			myRs = prepStmt.executeQuery();
+			while(myRs.next()){
+				Joblist job = convertRowToJob(myRs);
+				list.add(job);
+			}
+			
+		}
+		finally{
+			close(prepStmt, myRs);
+		}
+
+		
+		
+		return list;
 	}
 	
 	
@@ -1267,7 +1360,7 @@ public class DBConnection {
 		}
 	}
 	
-	/**
+	/********************************************************************************************************
 	 * Daily input of the data into the joblist
 	 * @param jobnum
 	 * @param leader
@@ -1276,13 +1369,15 @@ public class DBConnection {
 	 * @param hours
 	 * @param materials
 	 * @throws SQLException
-	 */
-	public void EditInputinJoblist(String jobnum, String leader, double RawCost, double TM, double hours, double materials)throws SQLException{
+	 ********************************************************************************************************/
+	public void EditInputinJoblist(String jobnum, String leader, double RawCost, double TM, double hours, 
+			double materials)throws SQLException{
 		PreparedStatement prepStmt = null;
 		int emplID = getEmployeeId(leader);
 		
 		try{
-			prepStmt = myConn.prepareStatement("update job set jobcost =?, t_m =?, hours =?, materials =?, employeeId =? where jobnum =?;");
+			prepStmt = myConn.prepareStatement("update job set jobcost =?, t_m =?, hours =?, materials =?, "
+					+ "employeeId =? where jobnum =?;");
 			prepStmt.setDouble(1, RawCost);
 			prepStmt.setDouble(2, TM);
 			prepStmt.setDouble(3, hours);
@@ -1294,9 +1389,10 @@ public class DBConnection {
 		}
 		finally{
 			close(prepStmt);
-		}
-		
+		}		
 	}
+	
+	
 	
 	
 	

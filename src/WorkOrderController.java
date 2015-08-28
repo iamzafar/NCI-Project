@@ -76,6 +76,9 @@ public class WorkOrderController implements Initializable {
 
 	@FXML
 	ComboBox<String> AmPm2;
+	
+	@FXML
+	ComboBox<String> itemName;
 
 	@FXML
 	CheckBox lunchbreak;
@@ -188,14 +191,12 @@ public class WorkOrderController implements Initializable {
 					&& datechooser.getValue() != null) {
 
 				inputWOdata(jobNumber, leader, actualRawCost, TM_cost,
-						workhours, dailyMaterialCost);// data input
+						total_workhours, dailyMaterialCost);// data input
 				askAnotherWokOrder(event);
 			}
 		} catch (Exception e) {
 			MessageBox box = new MessageBox();
-			box.show(
-					"\t\tCheck your input!!!\nChoose leader, Enter work hours, Enter date",
-					"Input Error");
+			box.show("\t\tCheck your input!!!\nChoose leader, Enter work hours, Enter date", "Input Error");
 		}
 	}
 
@@ -204,6 +205,7 @@ public class WorkOrderController implements Initializable {
 	 */
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
+		itemName.setEditable(true);
 		jobNumberLabel.setText(jobNumber);
 		clientNameLabel.setText(name);
 		workType.setText(jobtype);
@@ -221,122 +223,10 @@ public class WorkOrderController implements Initializable {
 			e2.printStackTrace();
 		}
 
-		// getting leaders
-		try {
-			listOfWorkers = connection.getName();
-		} catch (Exception e) {
-		}
-
-		leaderList.setItems(loadName(listOfWorkers)); // list of leaders in
-														// combo box
-		workerList.setItems(loadName(listOfWorkers)); // list of workers in
-														// combo box
-
-		// setting AM/PM
-		AmPm1.setItems(toAmpm());
-		AmPm2.setItems(toAmpm());
-
-		// setting hours
-		fromHoursList.setItems(hours());
-		toHoursList.setItems(hours());
-
-		// setup tree of tools
-		root = new TreeItem<String>(); // root of the tree
-		root.setExpanded(true); // root always will be expanded
-
-		bulkGoods = makeBranch("Bulk Goods", root);
-		list = connection.getNameOfBulkGoods();
-		for (String s : list)
-			makeBranch(s, bulkGoods);
-
-		disposal = makeBranch("Disposal", root);
-		list = connection.getNameOfDisposal();
-		for (String s : list)
-			makeBranch(s, disposal); // these are the leaves of the branch
-
-		fencing = makeBranch("Fencing", root);
-		masonrySupplies = makeBranch("Masonry Supply", root);
-
-		blocks = makeBranch("Blocks & Stones", masonrySupplies);
-		list = new ArrayList<String>();
-		list = connection.getNameOfBlockStones(); // getting name of stones
-		for (String s : list)
-			makeBranch(s, blocks); // adding names under block & stones
-		stones = makeBranch("Natural Stones", masonrySupplies);
-		masonry = makeBranch("Masonry Supply", masonrySupplies);
-
-		// Misc branch
-		miscellaneous = makeBranch("Miscellaneous", root);
-
-		pipes = makeBranch("Pipes", root);
-		ADS = makeBranch("ADS", pipes);
-		pipe1_5 = makeBranch("1.5\" Pipes", pipes);
-		pipe2 = makeBranch("2\" Pipes", pipes);
-		pipe3 = makeBranch("3\" Pipes", pipes);
-		pipe4 = makeBranch("4\" Pipes", pipes);
-
-		// Vehicles and Equip branch
-		vehicles_eqipm = makeBranch("Vehicled & Equipment", root);
-
-		// Woods branch
-		woods = makeBranch("Wood Products", root);
-		list = connection.getNameOfWoodProducts();
-		for (String s : list)
-			makeBranch(s, woods);
-
-		tools.setRoot(root); // setting the root
-		tools.setShowRoot(false); // root is not visible
-
-		// set up worker table
-		Name.setCellValueFactory(new PropertyValueFactory<EmployeeHours, String>(
-				"name"));
-
-		in.setCellValueFactory(new PropertyValueFactory<EmployeeHours, String>(
-				"timein"));
-
-		out.setCellValueFactory(new PropertyValueFactory<EmployeeHours, String>(
-				"timeout"));
-
-		hours.setCellValueFactory(new PropertyValueFactory<EmployeeHours, Double>(
-				"hours"));
-
-		cost.setCellValueFactory(new PropertyValueFactory<EmployeeHours, Double>(
-				"cost"));
-
-		total.setCellValueFactory(new PropertyValueFactory<EmployeeHours, Double>(
-				"total"));
-
-		// setup tools table
-		Id.setCellValueFactory(new PropertyValueFactory<Tools, Integer>("ID"));
-
-		itemNameColumn
-				.setCellValueFactory(new PropertyValueFactory<Tools, String>(
-						"name"));
-
-		unitColumn.setCellValueFactory(new PropertyValueFactory<Tools, String>(
-				"unit"));
-
-		toolAmount.setCellValueFactory(new PropertyValueFactory<Tools, Double>(
-				"amount"));
-
-		toolCost.setCellValueFactory(new PropertyValueFactory<Tools, Double>(
-				"billed"));
-
-		toolTotalColumn
-				.setCellValueFactory(new PropertyValueFactory<Tools, Double>(
-						"total"));
-
-		// checks if the job is finshed
-		try {
-			if (connection.isJobFinished(jobNumber)) {
-				System.out.println(connection.isJobFinished(jobNumber));
-				jobCompleted.setSelected(true); // check box selected and
-												// disabled
-				jobCompleted.setDisable(true);
-			}
-		} catch (SQLException | ParseException e1) {
-			e1.printStackTrace();
-		}
+		setUpEmployeeList();//setting up the list of employees
+		setUpHours();		//setting up hours
+		SetUpTree();		//setting up tree of items
+		setUpTables();		//setting up tables		
 	}
 
 	/**
@@ -367,6 +257,10 @@ public class WorkOrderController implements Initializable {
 				} else {
 					workhours = getHours(timein, timeout);
 				}
+				
+				total_workhours = total_workhours + workhours;
+				System.out.println("total hours Worked = "+ total_workhours);
+				
 				// sometimes some workers in the same team work more hours than
 				// other team members
 				// I should calculate who has more hours than others
@@ -412,6 +306,30 @@ public class WorkOrderController implements Initializable {
 			MessageBox.show("Input was incorrect while adding worker", "Error");
 		}
 	}
+	
+	
+	@FXML
+	public void searchWorker(){
+		List<String> list = new ArrayList<String>();
+		
+		
+		String str = workerList.getValue();
+		System.out.println(str);
+		
+		try {
+			list = connection.searchEmployee(str);
+		} catch (Exception e) {
+			// TODO: handle exception
+			e.printStackTrace();
+		}
+		
+		if(list.size() != 0){
+			workerList.setItems(loadName(list));
+			workerList.setValue(null);
+		}
+			
+		
+	}
 
 	/***********************************************************************
 	 * Removes worker from the table
@@ -427,6 +345,8 @@ public class WorkOrderController implements Initializable {
 			EmployeeHours e = (EmployeeHours) (workerstable.getSelectionModel()
 					.getSelectedItem()); // get selected item from the table
 			items.remove(e);// deleting from the table
+			
+			
 
 			// when employee is removed daily and ascending total will be
 			// subtracted
@@ -451,10 +371,10 @@ public class WorkOrderController implements Initializable {
 					employeelist.remove(i);
 					i = employeelist.size();
 				}
-			}
-
+			}			
+			total_workhours = total_workhours - e.getHours();
 			System.out.println("Array size: " + employeelist.size()
-					+ ", total workhours= " + workhours);
+					+ ", total workhours= " + total_workhours);
 			System.out.println(employeelist);
 		} catch (Exception e) {
 			// TODO: handle exception
@@ -580,9 +500,157 @@ public class WorkOrderController implements Initializable {
 			MessageBox box = new MessageBox();
 			box.show("Nothing to remove from the table\n" + e, "Error");
 		}
-
 	}
 	
+	//have to work on that
+	//it will search item by name
+	@FXML
+	public List<String> searchItem(){
+		List<String> list = new ArrayList<String>();		
+		System.out.println("Search Item was pressed: " + itemName.getValue());
+		
+		
+		
+		return list;
+	}
+	
+	/**
+	 * Setting tables for workers and items
+	 */
+	private void setUpTables(){
+		// set up worker table
+				Name.setCellValueFactory(new PropertyValueFactory<EmployeeHours, String>(
+						"name"));
+
+				in.setCellValueFactory(new PropertyValueFactory<EmployeeHours, String>(
+						"timein"));
+
+				out.setCellValueFactory(new PropertyValueFactory<EmployeeHours, String>(
+						"timeout"));
+
+				hours.setCellValueFactory(new PropertyValueFactory<EmployeeHours, Double>(
+						"hours"));
+
+				cost.setCellValueFactory(new PropertyValueFactory<EmployeeHours, Double>(
+						"cost"));
+
+				total.setCellValueFactory(new PropertyValueFactory<EmployeeHours, Double>(
+						"total"));
+
+				// setup tools table
+				Id.setCellValueFactory(new PropertyValueFactory<Tools, Integer>("ID"));
+
+				itemNameColumn
+						.setCellValueFactory(new PropertyValueFactory<Tools, String>(
+								"name"));
+
+				unitColumn.setCellValueFactory(new PropertyValueFactory<Tools, String>(
+						"unit"));
+
+				toolAmount.setCellValueFactory(new PropertyValueFactory<Tools, Double>(
+						"amount"));
+
+				toolCost.setCellValueFactory(new PropertyValueFactory<Tools, Double>(
+						"billed"));
+
+				toolTotalColumn
+						.setCellValueFactory(new PropertyValueFactory<Tools, Double>(
+								"total"));
+
+				// checks if the job is finshed
+				try {
+					if (connection.isJobFinished(jobNumber)) {
+						System.out.println(connection.isJobFinished(jobNumber));
+						jobCompleted.setSelected(true); // check box selected and
+														// disabled
+						jobCompleted.setDisable(true);
+					}
+				} catch (SQLException | ParseException e1) {
+					e1.printStackTrace();
+				}
+		
+	}
+	
+	/**
+	 * Setting up tree of items
+	 */
+	private void SetUpTree(){
+		// setup tree of tools
+				root = new TreeItem<String>(); // root of the tree
+				root.setExpanded(true); // root always will be expanded
+
+				bulkGoods = makeBranch("Bulk Goods", root);
+				list = connection.getNameOfBulkGoods();
+				for (String s : list)
+					makeBranch(s, bulkGoods);
+
+				disposal = makeBranch("Disposal", root);
+				list = connection.getNameOfDisposal();
+				for (String s : list)
+					makeBranch(s, disposal); // these are the leaves of the branch
+
+				fencing = makeBranch("Fencing", root);
+				masonrySupplies = makeBranch("Masonry Supply", root);
+
+				blocks = makeBranch("Blocks & Stones", masonrySupplies);
+				list = new ArrayList<String>();
+				list = connection.getNameOfBlockStones(); // getting name of stones
+				for (String s : list)
+					makeBranch(s, blocks); // adding names under block & stones
+				stones = makeBranch("Natural Stones", masonrySupplies);
+				masonry = makeBranch("Masonry Supply", masonrySupplies);
+
+				// Misc branch
+				miscellaneous = makeBranch("Miscellaneous", root);
+
+				pipes = makeBranch("Pipes", root);
+				ADS = makeBranch("ADS", pipes);
+				pipe1_5 = makeBranch("1.5\" Pipes", pipes);
+				pipe2 = makeBranch("2\" Pipes", pipes);
+				pipe3 = makeBranch("3\" Pipes", pipes);
+				pipe4 = makeBranch("4\" Pipes", pipes);
+
+				// Vehicles and Equip branch
+				vehicles_eqipm = makeBranch("Vehicled & Equipment", root);
+
+				// Woods branch
+				woods = makeBranch("Wood Products", root);
+				list = connection.getNameOfWoodProducts();
+				for (String s : list)
+					makeBranch(s, woods);
+
+				tools.setRoot(root); // setting the root
+				tools.setShowRoot(false); // root is not visible		
+	}
+	
+	/**
+	 * Setting up hours
+	 */
+	private void setUpHours(){
+		// setting AM/PM
+		AmPm1.setItems(toAmpm());
+		AmPm2.setItems(toAmpm());
+
+		// setting hours
+		fromHoursList.setItems(hours());
+		toHoursList.setItems(hours());
+	}
+	
+	/**
+	 * Setting up list of employees and leaders
+	 */
+	private void setUpEmployeeList(){
+		// getting leaders
+		try {
+			listOfWorkers = connection.getName();
+		} catch (Exception e) {
+		}
+
+		leaderList.setItems(loadName(listOfWorkers)); // list of leaders in
+														// combo box
+		workerList.setItems(loadName(listOfWorkers)); // list of workers in
+													// combo box	
+	}
 	
 	// making branch
 	private TreeItem<String> makeBranch(String title, TreeItem<String> parent) {
@@ -596,8 +664,7 @@ public class WorkOrderController implements Initializable {
 	// the main input of data into the joblist
 	private void inputWOdata(String jobnum, String leader, double RawCost,
 			double TM, double hours, double materials) {
-		System.out
-				.println("*************************Data input is initialized******************************");
+		System.out.println("*************************Data input is initialized******************************");
 		try {
 			connection.EditInputinJoblist(jobnum, leader, RawCost, TM, hours,
 					materials);
@@ -743,8 +810,7 @@ public class WorkOrderController implements Initializable {
 	private void checkJobstartedOrFinished() throws SQLException,
 			ParseException {
 		// formatting datepicker
-		DateTimeFormatter formatter = DateTimeFormatter
-				.ofPattern("MMM dd, yyyy");
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MMM dd, yyyy");
 		if (jobCompleted.isSelected()) {
 			if (datechooser.getValue() != null
 					&& !connection.isJobFinished(jobNumber)) {

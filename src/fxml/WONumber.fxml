@@ -13,7 +13,12 @@
             <Font name="System Bold" size="14.0" />
          </font>
       </Label>
-      <TextField fx:id="jobnumber" layoutX="166.0" layoutY="128.0" prefHeight="25.0" prefWidth="105.0" promptText="Ex. 123456" />
+      <TextField fx:id="jobnumber" layoutX="179.0" layoutY="128.0" prefHeight="25.0" prefWidth="83.0" promptText="Ex. 123456" />
       <Button layoutX="193.0" layoutY="164.0" mnemonicParsing="false" onAction="#submit" text="Submit" />
+      <Label layoutX="81.0" layoutY="52.0" text="NCI Project Management System" textFill="#1245ff">
+         <font>
+            <Font name="System Bold" size="18.0" />
+         </font>
+      </Label>
    </children>
 </AnchorPane>

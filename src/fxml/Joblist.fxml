@@ -19,7 +19,7 @@
           <Menu mnemonicParsing="false" text="Edit">
             <items>
                   <MenuItem mnemonicParsing="false" text="Edit Job" />
-              <MenuItem mnemonicParsing="false" text="Delete Job" />
+              <MenuItem fx:id="deleteJob" mnemonicParsing="false" onAction="#deleteJob" text="Delete Job" />
             </items>
           </Menu>
           <Menu mnemonicParsing="false" text="Help">
@@ -37,15 +37,15 @@
                     <columns>
                       <TableColumn fx:id="jobnumber" prefWidth="75.0" text="Job#" />
                       <TableColumn fx:id="clientName" prefWidth="119.0" text="Client" />
-                        <TableColumn fx:id="invoiced" prefWidth="73.0" text="Invoiced" />
-                        <TableColumn fx:id="cost" prefWidth="66.0" text="Cost" />
-                        <TableColumn fx:id="TM" prefWidth="64.0" text="T &amp; M" />
+                        <TableColumn fx:id="invoiced" prefWidth="73.0" text="Invoiced $" />
+                        <TableColumn fx:id="cost" prefWidth="66.0" text="Cost $" />
+                        <TableColumn fx:id="TM" prefWidth="64.0" text="T&amp;M $" />
                         <TableColumn fx:id="completion" prefWidth="74.0" text="Completion" />
                         <TableColumn fx:id="work_type" prefWidth="89.0" text="Work Type" />
                         <TableColumn fx:id="hours" prefWidth="62.0" text="Hours" />
                         <TableColumn fx:id="start_date" prefWidth="75.0" text="Start date" />
                         <TableColumn fx:id="end_date" prefWidth="75.0" text="End date" />
-                        <TableColumn fx:id="materials" prefWidth="82.0" text="Materials" />
+                        <TableColumn fx:id="materials" prefWidth="82.0" text="Materials $" />
                         <TableColumn fx:id="leader" prefWidth="119.0" text="Leader" />
                         <TableColumn fx:id="profit" prefWidth="82.0" text="Profit %" />
                     </columns>
@@ -54,9 +54,27 @@
             </AnchorPane>
           <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="52.0" prefWidth="1110.0">
                <children>
-                  <Button layoutX="27.0" layoutY="14.0" mnemonicParsing="false" onAction="#newJob" text="New Job" />
-                  <Button layoutX="957.0" layoutY="29.0" mnemonicParsing="false" onAction="#back" prefHeight="25.0" prefWidth="62.0" text="Back" />
-                  <CheckBox fx:id="notInvoiced" layoutX="109.0" layoutY="18.0" mnemonicParsing="false" onAction="#checkNotInvoiced" text="Show all not invoiced" />
+                  <SplitPane dividerPositions="0.26571428571428574" layoutY="-45.0" prefHeight="82.0" prefWidth="1052.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                    <items>
+                      <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="80.0" prefWidth="378.0">
+                           <children>
+                              <Button layoutX="23.0" layoutY="14.0" mnemonicParsing="false" onAction="#newJob" prefHeight="25.0" prefWidth="70.0" text="New Job" />
+                              <CheckBox fx:id="notInvoiced" layoutX="127.0" layoutY="18.0" mnemonicParsing="false" onAction="#checkNotInvoiced" text="Show all not invoiced" />
+                           </children>
+                        </AnchorPane>
+                      <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="80.0" prefWidth="559.0">
+                           <children>
+                              <Button layoutX="680.0" layoutY="28.0" mnemonicParsing="false" onAction="#back" prefHeight="25.0" prefWidth="62.0" text="Back" />
+                              <DatePicker fx:id="startdate" layoutX="79.0" layoutY="16.0" />
+                              <DatePicker fx:id="enddate" layoutX="79.0" layoutY="47.0" />
+                              <Label layoutX="35.0" layoutY="20.0" text="From" />
+                              <Label layoutX="35.0" layoutY="51.0" text="To" />
+                              <CheckBox layoutX="271.0" layoutY="20.0" mnemonicParsing="false" text="With Profit" />
+                              <Button layoutX="270.0" layoutY="41.0" mnemonicParsing="false" onAction="#getFinishedJobs" prefHeight="25.0" prefWidth="81.0" text="Show Result" />
+                           </children>
+                        </AnchorPane>
+                    </items>
+                  </SplitPane>
                </children></AnchorPane>
         </items>
       </SplitPane>

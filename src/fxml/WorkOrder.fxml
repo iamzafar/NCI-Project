@@ -38,20 +38,20 @@
       </Group>
       <Group layoutX="-1.0" layoutY="-23.0">
          <children>
-            <Label layoutX="73.0" layoutY="150.0" text="Worker" textFill="#0d0101">
+            <Label layoutX="78.0" layoutY="141.0" text="Worker" textFill="#0d0101">
                <font>
                   <Font name="System Bold" size="14.0" />
                </font></Label>
-            <Label layoutX="79.0" layoutY="184.0" text="From " textFill="#0d0101">
+            <Label layoutX="83.0" layoutY="173.0" text="From " textFill="#0d0101">
                <font>
                   <Font name="System Bold" size="14.0" />
                </font></Label>
             <Button layoutX="472.0" layoutY="280.0" mnemonicParsing="false" onAction="#removeWorker" prefHeight="25.0" prefWidth="112.0" text="remove worker" />
-            <Label layoutX="86.0" layoutY="219.0" text="To" textFill="#0d0101">
+            <Label layoutX="94.0" layoutY="208.0" text="To" textFill="#0d0101">
                <font>
                   <Font name="System Bold" size="14.0" />
                </font></Label>
-            <ComboBox fx:id="fromHoursList" layoutX="129.0" layoutY="182.0" prefHeight="25.0" prefWidth="71.0" />
+            <ComboBox fx:id="fromHoursList" layoutX="129.0" layoutY="170.0" prefHeight="25.0" prefWidth="71.0" />
             <TableView fx:id="workerstable" layoutX="306.0" layoutY="131.0" prefHeight="134.0" prefWidth="404.0">
               <columns>
                 <TableColumn fx:id="Name" prefWidth="127.0" text="Name" />
@@ -62,12 +62,12 @@
                   <TableColumn fx:id="total" prefWidth="51.0" text="Total" />
               </columns>
             </TableView>
-            <ComboBox fx:id="toHoursList" layoutX="129.0" layoutY="217.0" prefHeight="25.0" prefWidth="71.0" />
-            <CheckBox fx:id="lunchbreak" layoutX="76.0" layoutY="260.0" mnemonicParsing="false" text="Stopped for Lunch" />
-            <ComboBox fx:id="workerList" layoutX="129.0" layoutY="148.0" prefWidth="150.0" promptText="Choose Worker" />
-            <Button fx:id="add_Worker" layoutX="143.0" layoutY="280.0" mnemonicParsing="false" onAction="#addWorker" text="add worker" />
-            <ComboBox fx:id="AmPm1" layoutX="219.0" layoutY="182.0" prefHeight="25.0" prefWidth="61.0" />
-            <ComboBox fx:id="AmPm2" layoutX="217.0" layoutY="217.0" prefHeight="25.0" prefWidth="66.0" />
+            <ComboBox fx:id="toHoursList" layoutX="129.0" layoutY="205.0" prefHeight="25.0" prefWidth="71.0" />
+            <CheckBox fx:id="lunchbreak" layoutX="83.0" layoutY="240.0" mnemonicParsing="false" text="Stopped for Lunch" />
+            <ComboBox fx:id="workerList" editable="true" layoutX="129.0" layoutY="138.0" onAction="#searchWorker" prefHeight="25.0" prefWidth="123.0" promptText="Choose Worker" />
+            <Button fx:id="add_Worker" layoutX="162.0" layoutY="265.0" mnemonicParsing="false" onAction="#addWorker" text="add worker" />
+            <ComboBox fx:id="AmPm1" layoutX="220.0" layoutY="172.0" prefHeight="25.0" prefWidth="61.0" />
+            <ComboBox fx:id="AmPm2" layoutX="218.0" layoutY="205.0" prefHeight="25.0" prefWidth="66.0" />
          </children>
          <cursor>
             <Cursor fx:constant="DEFAULT" />
@@ -76,20 +76,21 @@
             <InnerShadow color="#18cc5aef" />
          </effect>
       </Group>
-      <Group layoutX="-2.0" layoutY="-36.0">
+      <Group layoutX="-5.0" layoutY="-40.0">
          <children>
-            <TableView fx:id="toolstable" layoutX="332.0" layoutY="350.0" prefHeight="134.0" prefWidth="378.0">
+            <TableView fx:id="toolstable" layoutX="326.0" layoutY="336.0" prefHeight="156.0" prefWidth="389.0">
                <columns>
                   <TableColumn fx:id="Id" prefWidth="39.0" text="ID" />
-                  <TableColumn fx:id="itemNameColumn" prefWidth="130.0" text="Name" />
-                  <TableColumn fx:id="unitColumn" prefWidth="54.0" text="Unit" />
-                  <TableColumn fx:id="toolAmount" prefWidth="56.0" text="Amount" />
-                  <TableColumn fx:id="toolCost" prefWidth="47.0" text="Cost" />
-                  <TableColumn fx:id="toolTotalColumn" prefWidth="51.0" text="Total" />
+                  <TableColumn fx:id="itemNameColumn" prefWidth="152.0" text="Name" />
+                  <TableColumn fx:id="unitColumn" prefWidth="43.0" text="Unit" />
+                  <TableColumn fx:id="toolAmount" prefWidth="57.0" text="Amount" />
+                  <TableColumn fx:id="toolCost" prefWidth="49.0" text="Cost" />
+                  <TableColumn fx:id="toolTotalColumn" prefWidth="45.0" text="Total" />
                </columns>
             </TableView>
-            <Button layoutX="465.0" layoutY="495.0" mnemonicParsing="false" onAction="#removeItem" prefHeight="25.0" prefWidth="112.0" text="remove items" />
-            <TreeView fx:id="tools" layoutX="75.0" layoutY="336.0" prefHeight="200.0" prefWidth="234.0" showRoot="false" />
+            <Button layoutX="465.0" layoutY="498.0" mnemonicParsing="false" onAction="#removeItem" prefHeight="25.0" prefWidth="112.0" text="remove items" />
+            <TreeView fx:id="tools" layoutX="75.0" layoutY="336.0" prefHeight="157.0" prefWidth="234.0" showRoot="false" />
+            <ComboBox fx:id="itemName" layoutX="81.0" layoutY="498.0" onAction="#searchItem" prefWidth="150.0" promptText="enter name of item" />
          </children>
          <effect>
             <InnerShadow color="#1c2eaded" />

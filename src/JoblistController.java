@@ -2,6 +2,8 @@ import java.io.IOException;
 import java.net.URL;
 import java.sql.Date;
 import java.sql.SQLException;
+import java.text.ParseException;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
@@ -19,6 +21,7 @@ import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.CheckBox;
+import javafx.scene.control.DatePicker;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.SplitPane;
 import javafx.scene.control.TableColumn;
@@ -48,10 +51,16 @@ public class JoblistController implements Initializable{
 	MenuItem newJob;
 	
 	@FXML
-	MenuItem report;
+	MenuItem deleteJob;	
 	
 	@FXML
 	CheckBox notInvoiced;
+	
+	@FXML
+	DatePicker startdate;
+	
+	@FXML
+	DatePicker enddate;
 	
 	@FXML
 	TableView joblist;
@@ -95,66 +104,12 @@ public class JoblistController implements Initializable{
 	@FXML
 	TableColumn<Joblist, Double> profit;
 	
-	public JoblistController() {
-		// TODO Auto-generated constructor stub
-	}
-	
 	
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
 		// TODO Auto-generated method stub
-		spltpane.setDividerPositions(0.8772);
-		joblist.setEditable(true);
-		
-		//setting up table
-		jobnumber.setCellValueFactory(new PropertyValueFactory<Joblist, Integer>("jobNum"));
-		
-		clientName.setCellValueFactory(new PropertyValueFactory<Joblist, String>("clientName"));
-		
-		invoiced.setCellValueFactory(new PropertyValueFactory<Joblist, Double>("invoice"));
-		setInvoiceEdittable(invoiced);
-		
-		cost.setCellValueFactory(new PropertyValueFactory<Joblist, Double>("cost"));
-		
-		TM.setCellValueFactory(new PropertyValueFactory<Joblist, Double>("T_M"));
-		
-		completion.setCellValueFactory(new PropertyValueFactory<Joblist, String>("completion"));
-		
-		work_type.setCellValueFactory(new PropertyValueFactory<Joblist, String>("workType"));
-		
-		hours.setCellValueFactory(new PropertyValueFactory<Joblist, Double>("hours"));
-		
-		materials.setCellValueFactory(new PropertyValueFactory<Joblist, Double>("materials"));
-		
-		start_date.setCellValueFactory(new PropertyValueFactory<Joblist, Date>("startdate"));
-		
-		end_date.setCellValueFactory(new PropertyValueFactory<Joblist, Date>("enddate"));
-		
-		leader.setCellValueFactory(new PropertyValueFactory<Joblist, String>("leader"));
-		
-		profit.setCellValueFactory(new PropertyValueFactory<Joblist, Double>("profit"));
-		
-		
-		jobs = new ArrayList<Joblist>();
-		
-		try {
-			connection = new DBConnection();
-			jobs = connection.getAllJob();
-		} catch (Exception e) {
-			// TODO: handle exception
-			MessageBox box = new MessageBox();
-			box.show("Could not connect to database\n" + e, "Error");
-		}
-
-		try {
-			joblist.setItems(LoadJoblist(jobs));
-		} catch (Exception e) {
-			// TODO: handle exception
-			MessageBox box = new MessageBox();
-			box.show("Could not Load joblist to the table\n" + e, "Error");
-			e.printStackTrace();
-		}
-		
+		spltpane.setDividerPositions(0.8772);		
+		setUpTables();		
 		
 	}
 	
@@ -213,6 +168,72 @@ public class JoblistController implements Initializable{
 	}
 	
 	@FXML
+	public void deleteJob(){
+		System.out.println("Delete Menu_Item was pressed");
+		ObservableList<Joblist> jobs;
+		jobs = joblist.getItems();		
+		Joblist j = (Joblist) joblist.getSelectionModel().getSelectedItem();		
+		System.out.println("Selected job: " + j);
+		
+		
+		boolean answer  = ConfirmationBox.display("Deleting Job", "Are you sure to delete this job: " + j.getJobNum());
+		if(answer){
+			jobs.remove(j);
+			try {
+				connection.deleteJob(j.getJobID());
+				MessageBox.show("Job "+ j.getJobNum()+" was deleted", "Confirmation");
+			} catch (Exception e) {
+				// TODO: handle exception
+				MessageBox.show("Cannot delete job", "Error");
+			}
+		}		
+	}
+	
+	
+	/**
+	 * Displays jobs that are finished by the given date  
+	 * @throws ParseException
+	 * @throws SQLException
+	 */
+	@FXML
+	public void getFinishedJobs()throws ParseException, SQLException{
+		List<Joblist> list = new ArrayList<Joblist>();
+		System.out.println("*********Get Finished Jobs was pressed***********");
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MMM dd, yyyy");
+		String start, finish;
+		try {
+			start = formatter.format(startdate.getValue());
+			finish = formatter.format(enddate.getValue());
+			System.out.println("start date: " + start + "\tend date: " + finish);
+			
+			list = connection.getCompletedJobs(start, finish);
+			
+			try {
+				joblist.setItems(LoadJoblist(list));
+			} catch (Exception e) {
+				// TODO: handle exception
+				MessageBox box = new MessageBox();
+				box.show("Could not Load joblist to the table\n" + e, "Error");
+				e.printStackTrace();
+			}
+			
+			for(Joblist j : list)
+				System.out.println(j);
+			
+		} catch (Exception e) {
+			// TODO: handle exception
+			MessageBox.show("Incorrect input\n" + e , "Error");
+			e.printStackTrace();
+		}
+		
+	}
+		
+	
+	/**
+	 * This method displays jobs that are not invoiced yet
+	 * @throws Exception
+	 */
+	@FXML
 	public void checkNotInvoiced()throws Exception{		
 		System.out.println("Not invoiced was checked\nGetting query...");
 		
@@ -253,10 +274,63 @@ public class JoblistController implements Initializable{
 				box.show("Could not Load joblist to the table\n" + e, "Error");
 				e.printStackTrace();
 			}
+		}		
+	}
+	
+	/**
+	 * Setting up tables when joblist is loaded
+	 */
+	private void setUpTables(){
+		joblist.setEditable(true);
+
+		//setting up table
+		jobnumber.setCellValueFactory(new PropertyValueFactory<Joblist, Integer>("jobNum"));
+
+		clientName.setCellValueFactory(new PropertyValueFactory<Joblist, String>("clientName"));
+
+		invoiced.setCellValueFactory(new PropertyValueFactory<Joblist, Double>("invoice"));
+		setInvoiceEdittable(invoiced);
+
+		cost.setCellValueFactory(new PropertyValueFactory<Joblist, Double>("cost"));
+
+		TM.setCellValueFactory(new PropertyValueFactory<Joblist, Double>("T_M"));
+
+		completion.setCellValueFactory(new PropertyValueFactory<Joblist, String>("completion"));
+
+		work_type.setCellValueFactory(new PropertyValueFactory<Joblist, String>("workType"));
+
+		hours.setCellValueFactory(new PropertyValueFactory<Joblist, Double>("hours"));
+
+		materials.setCellValueFactory(new PropertyValueFactory<Joblist, Double>("materials"));
+
+		start_date.setCellValueFactory(new PropertyValueFactory<Joblist, Date>("startdate"));
+
+		end_date.setCellValueFactory(new PropertyValueFactory<Joblist, Date>("enddate"));
+
+		leader.setCellValueFactory(new PropertyValueFactory<Joblist, String>("leader"));
+
+		profit.setCellValueFactory(new PropertyValueFactory<Joblist, Double>("profit"));
+
+
+		jobs = new ArrayList<Joblist>();
+
+		try {
+			connection = new DBConnection();
+			jobs = connection.getAllJob();
+		} catch (Exception e) {
+			// TODO: handle exception
+			MessageBox box = new MessageBox();
+			box.show("Could not connect to database\n" + e, "Error");
 		}
-		
-		
-		
+
+		try {
+			joblist.setItems(LoadJoblist(jobs));
+		} catch (Exception e) {
+			// TODO: handle exception
+			MessageBox box = new MessageBox();
+			box.show("Could not Load joblist to the table\n" + e, "Error");
+			e.printStackTrace();
+		}
 		
 	}
 	
@@ -318,14 +392,11 @@ public class JoblistController implements Initializable{
 				updateProfit(jobnum, profit);
 				System.out.println("Profit of job "+jobnum+" was updated successfully");
 			}
-		});		
-		
-		
+		});			
 	}
 	
-	
 	/**
-	 * 
+	 * Connects to database and updates
 	 * @param jobnum
 	 * @param profit
 	 */
